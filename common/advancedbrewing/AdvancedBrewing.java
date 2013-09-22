@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import advancedbrewing.PotionDefinition.Type;
 import advancedbrewing.block.BlockBrewery;
+import advancedbrewing.block.BlockBreweryMulti;
 import advancedbrewing.block.BlockInfuser;
 import advancedbrewing.block.BlockPotion;
 import advancedbrewing.block.BlockVaporizer;
@@ -55,6 +56,8 @@ public class AdvancedBrewing {
 	// blocks
 	public static Block breweryIdleBlock;
 	public static Block breweryBurningBlock;
+	public static Block breweryMultiIdleBlock;
+	public static Block breweryMultiBurningBlock;
 	public static Block infuserIdleBlock;
 	public static Block infuserBurningBlock;
 	public static Block vaporizerIdleBlock;
@@ -104,6 +107,14 @@ public class AdvancedBrewing {
 			int vaporizerBurningBlockID = configuration.getBlock("vaporizerBurningBlockID", 1005).getInt(1005);
 			vaporizerBurningBlock = new BlockVaporizer(vaporizerBurningBlockID, true).setLightValue(0.875F).setUnlocalizedName("block.vaporizer.burning.name");
 			GameRegistry.registerBlock(vaporizerBurningBlock, ItemBlockLocalized.class, vaporizerBurningBlock.getUnlocalizedName());
+	
+			int breweryMultiIdleBlockID = configuration.getBlock("breweryMultiIdleBlockID", 1006).getInt(1006);
+			breweryIdleBlock = new BlockBrewery(breweryMultiIdleBlockID, false).setCreativeTab(CreativeTabs.tabBrewing).setUnlocalizedName("block.breweryMulti.idle.name");
+			GameRegistry.registerBlock(breweryIdleBlock, ItemBlockLocalized.class, breweryIdleBlock.getUnlocalizedName());
+
+			int breweryMultiBurningBlockID = configuration.getBlock("breweryMultiBurningBlockID", 1007).getInt(1007);
+			breweryMultiBurningBlock = new BlockBreweryMulti(breweryMultiBurningBlockID, true).setLightValue(0.875F).setUnlocalizedName("block.breweryMulti.burning.name");
+			GameRegistry.registerBlock(breweryMultiBurningBlock, ItemBlockLocalized.class, breweryMultiBurningBlock.getUnlocalizedName());
 
 			// potions
 
