@@ -1,0 +1,19 @@
+[
+{
+  "modid": "AdvancedBrewing",
+  "name": "AdvancedBrewing",
+  "version": "0.0.1",
+  "mcversion": "",
+  "description": "AdvancedBrewing",
+  "credits": "...",
+  "logoFile": "/assets/advancedbrewing/logo.png",
+  "url": "http://advancedbrewing.mewk.net/",
+  "updateUrl": "",
+  "authors": [ "MewK" ],
+  "parent": "",
+  "screenshots": [],
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]
