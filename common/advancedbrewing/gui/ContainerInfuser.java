@@ -2,7 +2,7 @@ package advancedbrewing.gui;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
-import advancedbrewing.entity.TileEntityInfuser;
+import advancedbrewing.tileentity.TileEntityInfuser;
 
 public class ContainerInfuser extends ContainerMachine<TileEntityInfuser> {
 

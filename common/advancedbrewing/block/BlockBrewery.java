@@ -1,7 +1,7 @@
 package advancedbrewing.block;
 
 import advancedbrewing.AdvancedBrewing;
-import advancedbrewing.entity.TileEntityBrewery;
+import advancedbrewing.tileentity.TileEntityBrewery;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

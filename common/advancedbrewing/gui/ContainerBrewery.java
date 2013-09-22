@@ -1,7 +1,7 @@
 package advancedbrewing.gui;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import advancedbrewing.entity.TileEntityBrewery;
+import advancedbrewing.tileentity.TileEntityBrewery;
 
 public class ContainerBrewery extends ContainerMachine<TileEntityBrewery> {
 

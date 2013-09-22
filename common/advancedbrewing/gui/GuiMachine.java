@@ -10,8 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import advancedbrewing.PotionDefinition;
-import advancedbrewing.entity.TileEntityMachine;
-import advancedbrewing.entity.TileEntityPowered;
+import advancedbrewing.tileentity.TileEntityMachine;
+import advancedbrewing.tileentity.TileEntityPowered;
 import advancedbrewing.utils.Localization;
 import advancedbrewing.utils.Utils;
 

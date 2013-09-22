@@ -1,4 +1,4 @@
-package advancedbrewing.entity;
+package advancedbrewing.tileentity;
 
 import java.util.List;
 

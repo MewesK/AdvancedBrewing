@@ -1,14 +1,14 @@
 package advancedbrewing;
 
-import advancedbrewing.entity.TileEntityBrewery;
-import advancedbrewing.entity.TileEntityInfuser;
-import advancedbrewing.entity.TileEntityVaporizer;
 import advancedbrewing.gui.ContainerBrewery;
 import advancedbrewing.gui.ContainerInfuser;
 import advancedbrewing.gui.ContainerVaporizer;
 import advancedbrewing.gui.GuiBrewery;
 import advancedbrewing.gui.GuiInfuser;
 import advancedbrewing.gui.GuiVaporizer;
+import advancedbrewing.tileentity.TileEntityBrewery;
+import advancedbrewing.tileentity.TileEntityInfuser;
+import advancedbrewing.tileentity.TileEntityVaporizer;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
