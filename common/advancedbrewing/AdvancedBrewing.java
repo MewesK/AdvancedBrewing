@@ -17,7 +17,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import advancedbrewing.PotionDefinition.Type;
 import advancedbrewing.block.BlockBrewery;
 import advancedbrewing.block.BlockBreweryMulti;
 import advancedbrewing.block.BlockInfuser;
@@ -52,6 +51,8 @@ public class AdvancedBrewing {
 	// potions
 	public static List<PotionDefinition> potionDefinitions = new ArrayList<PotionDefinition>();
 	public static Map<Integer, PotionDefinition> potionDefinitionMappings = new HashMap<Integer, PotionDefinition>();
+	public static List<PotionDefinition> potionDefinitionsSplash = new ArrayList<PotionDefinition>();
+	public static Map<Integer, PotionDefinition> potionDefinitionMappingsSplash = new HashMap<Integer, PotionDefinition>();
 
 	// blocks
 	public static Block breweryIdleBlock;
@@ -190,52 +191,61 @@ public class AdvancedBrewing {
 	public void postInit(FMLPostInitializationEvent event) {
 	}
 
-	private static void registerPotionDefinition(String name, Type type, int[] potionIDs) {
-		PotionDefinition  potionDefinition = new PotionDefinition(name, type, potionIDs);
+	private static void registerPotionDefinition(String name, int[] potionIDs) {
+		PotionDefinition  potionDefinition = new PotionDefinition(name, potionIDs);
 		potionDefinitions.add(potionDefinition);
 		for (int potionID : potionIDs) {
 			potionDefinitionMappings.put(potionID, potionDefinition);
 		}
+		if (!name.equals("water") && !name.equals("potion.awkward") && !name.equals("potion.thick") && !name.equals("potion.mundane_extended") && !name.equals("potion.mundane")) {
+			for (int i = 0; i < potionIDs.length; i++) {
+				potionIDs[i] += 8192;
+			}
+			potionDefinition = new PotionDefinition(name + "_splash", potionIDs);
+			potionDefinitionsSplash.add(potionDefinition);
+			for (int potionID : potionIDs) {
+				potionDefinitionMappingsSplash.put(potionID, potionDefinition);
+			}
+		}
 	}
 	
 	static {
-		registerPotionDefinition("water", Type.blue, new int[] { 0 });
+		registerPotionDefinition("water", new int[] { 0 });
 		
 		// base potions
-		registerPotionDefinition("potion.awkward", Type.blue, new int[] { 16 });
-		registerPotionDefinition("potion.thick", Type.blue, new int[] { 32 });
-		registerPotionDefinition("potion.mundane_extended", Type.blue, new int[] { 64 });
-		registerPotionDefinition("potion.mundane", Type.blue, new int[] { 8192 });
+		registerPotionDefinition("potion.awkward", new int[] { 16 });
+		registerPotionDefinition("potion.thick", new int[] { 32 });
+		registerPotionDefinition("potion.mundane_extended", new int[] { 64 });
+		registerPotionDefinition("potion.mundane", new int[] { 8192 });
 
-		// regeneration potions
-		registerPotionDefinition("potion.regeneration", Type.pink, new int[] { 8193 });
-		registerPotionDefinition("potion.regeneration_extended", Type.pink, new int[] { 8257 });
-		registerPotionDefinition("potion.regeneration_2", Type.pink, new int[] { 8225 });
-
-		// swiftness potions
-		registerPotionDefinition("potion.swiftness", Type.turquoise, new int[] { 8194 });
-		registerPotionDefinition("potion.swiftness_extended", Type.turquoise, new int[] { 8258 });
-		registerPotionDefinition("potion.swiftness_2", Type.turquoise, new int[] { 8226 });
-
-		// fire resistance potions
-		registerPotionDefinition("potion.fire_resistance", Type.yellow, new int[] { 8195, 8227 });
-		registerPotionDefinition("potion.fire_resistance_extended", Type.yellow, new int[] { 8259 });
-
-		// healing potions
-		registerPotionDefinition("potion.healing", Type.red, new int[] { 8197, 8261 });
-		registerPotionDefinition("potion.healing_2", Type.red, new int[] { 8229 });
-
-		// night vision potions
-		registerPotionDefinition("potion.night_vision", Type.darkblue, new int[] { 8198, 8230 });
-		registerPotionDefinition("potion.night_vision_extended", Type.darkblue, new int[] { 8262 });
-
-		// strength potions
-		registerPotionDefinition("potion.strength", Type.darkred, new int[] { 8201 });
-		registerPotionDefinition("potion.strength_extended", Type.darkred, new int[] { 8265 });
-		registerPotionDefinition("potion.strength_2", Type.darkred, new int[] { 8233 });
-
-		// invisibility potions
-		registerPotionDefinition("potion.invisibility", Type.grey, new int[] { 8206, 8238 });
-		registerPotionDefinition("potion.invisibility_extended", Type.grey, new int[] { 8270 });
+		// positive potions
+		registerPotionDefinition("potion.regeneration", new int[] { 8193 });
+		registerPotionDefinition("potion.regeneration_extended", new int[] { 8257 });
+		registerPotionDefinition("potion.regeneration_2", new int[] { 8225 });
+		registerPotionDefinition("potion.swiftness", new int[] { 8194 });
+		registerPotionDefinition("potion.swiftness_extended", new int[] { 8258 });
+		registerPotionDefinition("potion.swiftness_2", new int[] { 8226 });
+		registerPotionDefinition("potion.fire_resistance", new int[] { 8195, 8227 });
+		registerPotionDefinition("potion.fire_resistance_extended", new int[] { 8259 });
+		registerPotionDefinition("potion.healing", new int[] { 8197, 8261 });
+		registerPotionDefinition("potion.healing_2", new int[] { 8229 });
+		registerPotionDefinition("potion.night_vision", new int[] { 8198, 8230 });
+		registerPotionDefinition("potion.night_vision_extended", new int[] { 8262 });
+		registerPotionDefinition("potion.strength", new int[] { 8201 });
+		registerPotionDefinition("potion.strength_extended", new int[] { 8265 });
+		registerPotionDefinition("potion.strength_2", new int[] { 8233 });
+		registerPotionDefinition("potion.invisibility", new int[] { 8206, 8238 });
+		registerPotionDefinition("potion.invisibility_extended", new int[] { 8270 });
+		
+		// negative potions
+		registerPotionDefinition("potion.poison", new int[] { 8196 });
+		registerPotionDefinition("potion.poison_extended", new int[] { 8260 });
+		registerPotionDefinition("potion.poison_2", new int[] { 8228 });
+		registerPotionDefinition("potion.weakness", new int[] { 8200, 8232 });
+		registerPotionDefinition("potion.weakness_extended", new int[] { 8264 });
+		registerPotionDefinition("potion.slowness", new int[] { 8202, 8234 });
+		registerPotionDefinition("potion.slowness_extended", new int[] { 8266 });
+		registerPotionDefinition("potion.harming", new int[] { 8204, 8268 });
+		registerPotionDefinition("potion.harming_2", new int[] { 8236 });
 	}
 }

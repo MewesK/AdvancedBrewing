@@ -1,5 +1,6 @@
 package advancedbrewing;
 
+import java.util.List;
 import java.util.Random;
 
 import advancedbrewing.entity.EntityArrowPotion;
@@ -7,8 +8,12 @@ import advancedbrewing.utils.Utils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -41,22 +46,21 @@ public class HandlerBow {
 			if (inventorySlot >= 0) {
 				ItemStack itemStack = event.entityPlayer.inventory.getStackInSlot(inventorySlot);
 
-				int charge = event.charge;
-				float f = charge / 20.0F;
-				f = (f * f + f * 2.0F) / 3.0F;
+				float charge = event.charge / 20.0F;
+				charge = (charge * charge + charge * 2.0F) / 3.0F;
 
-				if (f < 0.1D) {
+				if (charge < 0.1D) {
 					return;
 				}
 
-				if (f > 1.0F) {
-					f = 1.0F;
+				if (charge > 1.0F) {
+					charge = 1.0F;
 				}
 
-				EntityArrowPotion entityarrow = new EntityArrowPotion(event.entityPlayer.worldObj, event.entityPlayer, f * 2.0F);
+				EntityArrowPotion entityarrow = new EntityArrowPotion(event.entityPlayer.worldObj, event.entityPlayer, charge * 2.0F);
 				entityarrow.setPotionID(itemStack.getItemDamage());
 
-				if (f == 1.0F) {
+				if (charge == 1.0F) {
 					entityarrow.setIsCritical(true);
 				}
 
@@ -75,7 +79,7 @@ public class HandlerBow {
 				}
 
 				event.bow.damageItem(1, event.entityPlayer);
-				event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (rand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+				event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (rand.nextFloat() * 0.4F + 1.2F) + charge * 0.5F);
 				event.entityPlayer.inventory.consumeInventoryItem(AdvancedBrewing.arrowPotionItem.itemID);
 
 				if (!event.entityPlayer.worldObj.isRemote) {
@@ -83,19 +87,34 @@ public class HandlerBow {
 				}
 
 				event.setCanceled(true);
-				event.charge = charge;
 			}
 		}
 	}
 
 	@ForgeSubscribe
+	@SuppressWarnings("unchecked")
 	public void onLivingAttack(LivingAttackEvent event) {
 		Entity sourceOfDamage = event.source.getSourceOfDamage();
 		if (sourceOfDamage != null && sourceOfDamage instanceof EntityArrowPotion) {
-			int potionID = ((EntityArrowPotion)sourceOfDamage).getPotionID();
+			int potionID = ((EntityArrowPotion) sourceOfDamage).getPotionID();
 			if (potionID >= 0) {
 				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "random.bowhit", 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
-				Utils.applyPotionEffects(potionID, event.entityLiving);
+				if (!ItemPotion.isSplash(potionID)) {
+					Utils.applyPotionEffects(potionID, event.entityLiving);
+				}
+				else {
+					if (!event.entityLiving.worldObj.isRemote) {
+						List<PotionEffect> potionEffects = Item.potion.getEffects(potionID);
+						if (potionEffects != null && !potionEffects.isEmpty()) {
+							AxisAlignedBB axisalignedbb = sourceOfDamage.boundingBox.expand(4.0D, 2.0D, 4.0D);
+							List<EntityLivingBase> entityLivingBases = event.entityLiving.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+							if (entityLivingBases != null && !entityLivingBases.isEmpty()) {
+								Utils.applyPotionEffects(potionID, entityLivingBases);
+							}
+						}
+						event.entityLiving.worldObj.playAuxSFX(2002, (int) Math.round(sourceOfDamage.posX), (int) Math.round(sourceOfDamage.posY), (int) Math.round(sourceOfDamage.posZ), potionID);
+					}
+				}
 				sourceOfDamage.setDead();
 				event.setCanceled(true);
 			}

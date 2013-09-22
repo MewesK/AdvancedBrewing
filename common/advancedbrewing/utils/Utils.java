@@ -18,6 +18,10 @@ public class Utils {
 	public static PotionDefinition getPotionDefinitionByPotionID(int potionID) {
 		return AdvancedBrewing.potionDefinitionMappings.get(potionID);
 	}
+	public static PotionDefinition getPotionDefinitionByPotionID(int potionID, boolean allowSplash) {
+		PotionDefinition potionDefinition = getPotionDefinitionByPotionID(potionID);
+		return potionDefinition == null ? AdvancedBrewing.potionDefinitionMappingsSplash.get(potionID) : potionDefinition;
+	}
 
 	public static PotionDefinition getPotionDefinitionByBlock(Block block) {
 		return getPotionDefinitionByBlock(block.blockID);

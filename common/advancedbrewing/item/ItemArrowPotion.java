@@ -4,7 +4,6 @@ import java.util.List;
 
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.PotionDefinition;
-import advancedbrewing.PotionDefinition.Type;
 import advancedbrewing.utils.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +26,13 @@ public class ItemArrowPotion extends ItemBucketPotion {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
 		for (PotionDefinition potionDefinition : AdvancedBrewing.potionDefinitions) {
-			if (potionDefinition.getType().equals(Type.blue)) {
+			if (potionDefinition.getName().equals("water")) {
+				continue;
+			}
+			par3List.add(new ItemStack(this.itemID, 1, potionDefinition.getPotionID()));
+		}
+		for (PotionDefinition potionDefinition : AdvancedBrewing.potionDefinitionsSplash) {
+			if (potionDefinition.getName().equals("water")) {
 				continue;
 			}
 			par3List.add(new ItemStack(this.itemID, 1, potionDefinition.getPotionID()));
@@ -36,7 +41,7 @@ public class ItemArrowPotion extends ItemBucketPotion {
 	
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack) {
-		return "item.arrow." + Utils.getPotionDefinitionByPotionID(itemstack.getItemDamage()).getName() + ".name";
+		return "item.arrow." + Utils.getPotionDefinitionByPotionID(itemstack.getItemDamage(), true).getName() + ".name";
 	}
 
 	@Override

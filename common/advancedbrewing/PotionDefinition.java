@@ -10,17 +10,15 @@ public class PotionDefinition {
 	}
 
 	private String name;
-	private Type type;
 	private int[] potionIDs;
 	private Block block;
 
-	public PotionDefinition(String name, Type type) {
-		this(name, type, null);
+	public PotionDefinition(String name) {
+		this(name, null);
 	}
 
-	public PotionDefinition(String name, Type type, int[] potionIDs) {
+	public PotionDefinition(String name, int[] potionIDs) {
 		this.name = name;
-		this.type = type;
 		this.potionIDs = potionIDs;
 	}
 	
@@ -34,14 +32,6 @@ public class PotionDefinition {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 	}
 
 	public int getPotionID() {
