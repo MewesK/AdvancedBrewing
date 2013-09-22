@@ -76,7 +76,6 @@ public class ItemAutoPotion extends ItemBucketPotion {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer entityPlayer) {
 		NBTTagCompound tag = itemStack.getTagCompound();
 		if (tag == null) {
@@ -93,13 +92,7 @@ public class ItemAutoPotion extends ItemBucketPotion {
 				itemStack.setTagCompound(tag);
 
 				if (!world.isRemote) {
-					ItemStack itemStackInner = new ItemStack(Item.potion, 1, potionDefinition.getPotionID());
-					List<PotionEffect> list = Item.potion.getEffects(itemStackInner);
-					if (list != null) {
-						for (PotionEffect potioneffect : list) {
-							entityPlayer.addPotionEffect(new PotionEffect(potioneffect));
-						}
-					}
+					Utils.applyPotionEffects(potionDefinition.getPotionID(), entityPlayer);
 				}
 
 				if (fluidAmount - FluidContainerRegistry.BUCKET_VOLUME <= 0) {

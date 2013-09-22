@@ -3,6 +3,7 @@ package advancedbrewing.utils;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
@@ -90,5 +91,22 @@ public class Utils {
 		}
 		
 		return -1;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void applyPotionEffects(int potionID, EntityLivingBase entityLivingBase) {
+		ItemStack itemStackInner = new ItemStack(Item.potion, 1, potionID);
+		List<PotionEffect> list = Item.potion.getEffects(itemStackInner);
+		if (list != null) {
+			for (PotionEffect potioneffect : list) {
+				entityLivingBase.addPotionEffect(new PotionEffect(potioneffect));
+			}
+		}
+	}
+	
+	public static void applyPotionEffects(int potionID, List<EntityLivingBase> entityLivingBases) {
+		for (EntityLivingBase entityLivingBase : entityLivingBases) {
+			applyPotionEffects(potionID, entityLivingBase);
+		}
 	}
 }

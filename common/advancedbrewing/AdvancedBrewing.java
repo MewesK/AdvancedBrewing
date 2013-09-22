@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -21,13 +22,14 @@ import advancedbrewing.block.BlockBrewery;
 import advancedbrewing.block.BlockInfuser;
 import advancedbrewing.block.BlockPotion;
 import advancedbrewing.block.BlockVaporizer;
-import advancedbrewing.entity.TileEntityBrewery;
-import advancedbrewing.entity.TileEntityInfuser;
-import advancedbrewing.entity.TileEntityVaporizer;
+import advancedbrewing.item.ItemArrowPotion;
 import advancedbrewing.item.ItemBlockLocalized;
 import advancedbrewing.item.ItemAutoPotion;
 import advancedbrewing.item.ItemBucketPotion;
 import advancedbrewing.proxy.Proxy;
+import advancedbrewing.tileentity.TileEntityBrewery;
+import advancedbrewing.tileentity.TileEntityInfuser;
+import advancedbrewing.tileentity.TileEntityVaporizer;
 import advancedbrewing.utils.Localization;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -116,7 +118,8 @@ public class AdvancedBrewing {
 
 			// arrowPotion
 			int arrowPotionItemID = configuration.getItem("arrowPotionItemID", 10002).getInt(10002);
-//			potionArrow = new ItemArrowPotion(potionArrowItemID);
+			arrowPotionItem = new ItemArrowPotion(arrowPotionItemID);
+	        BlockDispenser.dispenseBehaviorRegistry.putObject(arrowPotionItem, new DispenserBehaviorArrowPotion());
 			
 			int i = 0;
 			for (PotionDefinition potionDefinition : potionDefinitions) {
@@ -147,6 +150,7 @@ public class AdvancedBrewing {
 			// register handlers
 			MinecraftForge.EVENT_BUS.register(new HandlerTexture());
 			MinecraftForge.EVENT_BUS.register(new HandlerBucket());
+			MinecraftForge.EVENT_BUS.register(new HandlerBow());
 
 			Localization.addLocalization("/lang/advancedbrewing/", "en_US");
 		}

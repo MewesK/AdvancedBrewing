@@ -3,8 +3,8 @@ package advancedbrewing.gui;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
-import advancedbrewing.entity.TileEntityInfuser;
-import advancedbrewing.entity.TileEntityMachine;
+import advancedbrewing.tileentity.TileEntityInfuser;
+import advancedbrewing.tileentity.TileEntityMachine;
 
 public class GuiInfuser extends GuiMachine<TileEntityInfuser> {
 

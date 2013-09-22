@@ -71,9 +71,7 @@ public class BlockPotion extends BlockFluidClassic {
     				int[] sourceBlockCoords = this.findSourceBlockRecursive(world, x, y, z, MAX_SOURCEBLOCK_DISTANCE);
     
     				if (sourceBlockCoords != null) {
-						for (PotionEffect potioneffect : list) {
-							((EntityLivingBase) entity).addPotionEffect(new PotionEffect(potioneffect));
-						}
+						Utils.applyPotionEffects(potionDefinition.getPotionID(), (EntityLivingBase) entity);
     
     					world.setBlockToAir(sourceBlockCoords[0], sourceBlockCoords[1], sourceBlockCoords[2]);
     				}

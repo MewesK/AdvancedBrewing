@@ -1,4 +1,4 @@
-package advancedbrewing.entity;
+package advancedbrewing.tileentity;
 
 import java.util.List;
 
@@ -148,11 +148,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 					}
 				}
 				if (willHaveEffect) {
-					for (PotionEffect potionEffect : potionEffects) {
-						for (EntityLivingBase entity : entities) {
-							entity.addPotionEffect(potionEffect);
-						}
-					}
+					Utils.applyPotionEffects(potionDefinitionBase.getPotionID(), entities);
 					this.fluidTanks[0].drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 					
 					return true;

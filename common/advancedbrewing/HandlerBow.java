@@ -2,11 +2,15 @@ package advancedbrewing;
 
 import java.util.Random;
 
+import advancedbrewing.entity.EntityArrowPotion;
+import advancedbrewing.utils.Utils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
@@ -24,57 +28,77 @@ public class HandlerBow {
 
 	@ForgeSubscribe
 	public void onArrowLoose(ArrowLooseEvent event) {
-		boolean flag = event.entityPlayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, event.bow) > 0;
+		if (event.entityPlayer.inventory.hasItem(AdvancedBrewing.arrowPotionItem.itemID)) {
+			int inventorySlot = -1;
 
-		if (flag || event.entityPlayer.inventory.hasItem(AdvancedBrewing.arrowPotionItem.itemID)) {
-			int charge = event.charge;
-			float f = (float) charge / 20.0F;
-			f = (f * f + f * 2.0F) / 3.0F;
-
-			if ((double) f < 0.1D) {
-				return;
+			for (int i = 0; i < event.entityPlayer.inventory.mainInventory.length; ++i) {
+				if (event.entityPlayer.inventory.mainInventory[i] != null && event.entityPlayer.inventory.mainInventory[i].itemID == AdvancedBrewing.arrowPotionItem.itemID) {
+					inventorySlot = i;
+					break;
+				}
 			}
 
-			if (f > 1.0F) {
-				f = 1.0F;
-			}
+			if (inventorySlot >= 0) {
+				ItemStack itemStack = event.entityPlayer.inventory.getStackInSlot(inventorySlot);
 
-			EntityArrow entityarrow = new EntityArrow(event.entityPlayer.worldObj, event.entityPlayer, f * 2.0F);
+				int charge = event.charge;
+				float f = charge / 20.0F;
+				f = (f * f + f * 2.0F) / 3.0F;
 
-			if (f == 1.0F) {
-				entityarrow.setIsCritical(true);
-			}
+				if (f < 0.1D) {
+					return;
+				}
 
-			int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
-			if (k > 0) {
-				entityarrow.setDamage(entityarrow.getDamage() + (double) k * 0.5D + 0.5D);
-			}
+				if (f > 1.0F) {
+					f = 1.0F;
+				}
 
-			int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
-			if (l > 0) {
-				entityarrow.setKnockbackStrength(l);
-			}
+				EntityArrowPotion entityarrow = new EntityArrowPotion(event.entityPlayer.worldObj, event.entityPlayer, f * 2.0F);
+				entityarrow.setPotionID(itemStack.getItemDamage());
 
-			if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0) {
-				entityarrow.setFire(100);
-			}
+				if (f == 1.0F) {
+					entityarrow.setIsCritical(true);
+				}
 
-			event.bow.damageItem(1, event.entityPlayer);
-			event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (rand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+				int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
+				if (k > 0) {
+					entityarrow.setDamage(entityarrow.getDamage() + k * 0.5D + 0.5D);
+				}
 
-			if (flag) {
-				entityarrow.canBePickedUp = 2;
-			}
-			else {
+				int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
+				if (l > 0) {
+					entityarrow.setKnockbackStrength(l);
+				}
+
+				if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0) {
+					entityarrow.setFire(100);
+				}
+
+				event.bow.damageItem(1, event.entityPlayer);
+				event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (rand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 				event.entityPlayer.inventory.consumeInventoryItem(AdvancedBrewing.arrowPotionItem.itemID);
-			}
 
-			if (!event.entityPlayer.worldObj.isRemote) {
-				event.entityPlayer.worldObj.spawnEntityInWorld(entityarrow);
-			}
+				if (!event.entityPlayer.worldObj.isRemote) {
+					event.entityPlayer.worldObj.spawnEntityInWorld(entityarrow);
+				}
 
-    		event.setCanceled(true);
-    		event.charge = charge;
+				event.setCanceled(true);
+				event.charge = charge;
+			}
+		}
+	}
+
+	@ForgeSubscribe
+	public void onLivingAttack(LivingAttackEvent event) {
+		Entity sourceOfDamage = event.source.getSourceOfDamage();
+		if (sourceOfDamage != null && sourceOfDamage instanceof EntityArrowPotion) {
+			int potionID = ((EntityArrowPotion)sourceOfDamage).getPotionID();
+			if (potionID >= 0) {
+				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "random.bowhit", 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
+				Utils.applyPotionEffects(potionID, event.entityLiving);
+				sourceOfDamage.setDead();
+				event.setCanceled(true);
+			}
 		}
 	}
 }

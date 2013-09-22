@@ -1,4 +1,4 @@
-package advancedbrewing.entity;
+package advancedbrewing.tileentity;
 
 import buildcraft.api.power.PowerHandler;
 import net.minecraft.entity.player.EntityPlayer;
