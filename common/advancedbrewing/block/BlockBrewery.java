@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class BlockBrewery extends BlockMachine<TileEntityBrewery> {
-
+	
 	public BlockBrewery(int blockID, boolean isActive) {
 		super(blockID, isActive);
 	}
@@ -27,7 +27,7 @@ public class BlockBrewery extends BlockMachine<TileEntityBrewery> {
 	public int idPicked(World par1World, int par2, int par3, int par4) {
 		return AdvancedBrewing.breweryIdleBlock.blockID;
 	}
-
+	
 	@Override
 	public void updateBlockState(boolean isBrewing, World par1World, int par2, int par3, int par4) {
 		int metadata = par1World.getBlockMetadata(par2, par3, par4);

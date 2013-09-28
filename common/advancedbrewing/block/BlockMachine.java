@@ -24,7 +24,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public abstract class BlockMachine<T extends TileEntityMachine> extends BlockContainer {
-
+	
+	public static final int DIR_SOUTH = 0x02;
+	public static final int DIR_EAST = 0x04;
+	public static final int DIR_NORTH = 0x03;
+	public static final int DIR_WEST = 0x05;
+	
 	protected final Random rand = new Random();
 	protected final boolean isActive;
 	protected static boolean keepInventory;
@@ -95,25 +100,25 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 			int i1 = world.getBlockId(par2, par3, par4 + 1);
 			int j1 = world.getBlockId(par2 - 1, par3, par4);
 			int k1 = world.getBlockId(par2 + 1, par3, par4);
-			byte b0 = 3;
+			byte dir = 3;
 
 			if (Block.opaqueCubeLookup[l] && !Block.opaqueCubeLookup[i1]) {
-				b0 = 3;
+				dir = DIR_NORTH;
 			}
 
 			if (Block.opaqueCubeLookup[i1] && !Block.opaqueCubeLookup[l]) {
-				b0 = 2;
+				dir = DIR_SOUTH;
 			}
 
 			if (Block.opaqueCubeLookup[j1] && !Block.opaqueCubeLookup[k1]) {
-				b0 = 5;
+				dir = DIR_WEST;
 			}
 
 			if (Block.opaqueCubeLookup[k1] && !Block.opaqueCubeLookup[j1]) {
-				b0 = 4;
+				dir = DIR_EAST;
 			}
-
-			world.setBlockMetadataWithNotify(par2, par3, par4, b0, 2);
+			
+			world.setBlockMetadataWithNotify(par2, par3, par4, dir, 2);
 		}
 	}
 
@@ -132,19 +137,19 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 		int l = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
 		if (l == 0) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, 2, 2);
+			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_SOUTH, 2);
 		}
 
 		if (l == 1) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, 5, 2);
+			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_WEST, 2);
 		}
 
 		if (l == 2) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, 3, 2);
+			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_NORTH, 2);
 		}
 
 		if (l == 3) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, 4, 2);
+			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_EAST, 2);
 		}
 	}
 

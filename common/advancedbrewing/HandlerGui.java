@@ -35,6 +35,7 @@ public class HandlerGui implements IGuiHandler {
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		if (tileEntity instanceof TileEntityBrewery) {
+			System.out.println("Is multiblock structure: " + ((TileEntityBrewery) tileEntity).checkIfProperlyFormed());
 			return new GuiBrewery(player.inventory, (TileEntityBrewery) tileEntity);
 		}
 		if (tileEntity instanceof TileEntityInfuser) {

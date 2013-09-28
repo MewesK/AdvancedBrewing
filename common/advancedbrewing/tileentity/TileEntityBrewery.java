@@ -2,6 +2,7 @@ package advancedbrewing.tileentity;
 
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.Type;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
@@ -12,14 +13,17 @@ import net.minecraftforge.fluids.FluidTank;
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.PotionDefinition;
 import advancedbrewing.block.BlockBrewery;
+import advancedbrewing.block.BlockMachine;
 import advancedbrewing.gui.SlotBreweryEmptyContainer;
 import advancedbrewing.gui.SlotBreweryPotionContainer;
 import advancedbrewing.gui.SlotBreweryPotionIngredient;
 import advancedbrewing.utils.Utils;
 
 public class TileEntityBrewery extends TileEntityMachine {
-	public static int RESULT_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 3;
+	public static int RESULT_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 4;
+	public static int RESULT_FLUIDAMOUNT_MULTI = FluidContainerRegistry.BUCKET_VOLUME * 6;
 	public static int MAX_WORKTIME = 400;
+	public static int MAX_WORKTIME_MULTI = 300;
 
 	// properties
 	private int ingredientID;
@@ -32,7 +36,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 		this.fluidTanks[1] = new FluidTank(MAX_FLUIDAMOUNT);
 
 		this.setPowerHandler(new PowerHandler(this, Type.MACHINE));
-		this.getPowerHandler().configure(2, 100, 1, 10000);
+		this.getPowerHandler().configure(2, 100, 1, 5000);
 		this.getPowerHandler().configurePowerPerdition(0, 0);
 	}
 
@@ -43,7 +47,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 		if (this.worldObj.isRemote) {
 			return;
 		}
-		
+
 		float usedEnergy = 0;
 
 		// process bucket slot (input)
@@ -119,16 +123,16 @@ public class TileEntityBrewery extends TileEntityMachine {
 			int potionResult = Utils.getPotionIDResult(this.fluidTanks[0].getFluid().getFluid(), this.itemStacks[0], false);
 			PotionDefinition potionDefinitionResult = Utils.getPotionDefinitionByPotionID(potionResult);
 			Fluid fluidResult = Utils.getFluidByPotionDefintion(potionDefinitionResult);
-    		if (fluidResult != null) {
-    			this.fluidTanks[0].drain(RESULT_FLUIDAMOUNT, true);
-    			this.fluidTanks[1].fill(new FluidStack(fluidResult, RESULT_FLUIDAMOUNT), true);	
-    			decrStackSize(0, 1);
-    			return true;
+			if (fluidResult != null) {
+				this.fluidTanks[0].drain(RESULT_FLUIDAMOUNT, true);
+				this.fluidTanks[1].fill(new FluidStack(fluidResult, RESULT_FLUIDAMOUNT), true);
+				decrStackSize(0, 1);
+				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	// ISidedInventory
 
 	@Override
@@ -196,10 +200,44 @@ public class TileEntityBrewery extends TileEntityMachine {
 		return this.fluidTanks[1].drain(maxDrain, doDrain);
 	}
 
+	// Multi
+
+	public int checkIfProperlyFormed() {
+		int type = 1;
+		int dir = getBlockMetadata();
+
+		// Horizontal (X or Z)
+		for (int horiz = -1; horiz <= 1; horiz++) {
+			// Vertical (Y)
+			for (int vert = 0; vert <= 2; vert++) {
+				// Depth (Z or X)
+				for (int depth = 1; depth <= 3; depth++) {
+					int x = this.xCoord + (dir == BlockMachine.DIR_SOUTH ? horiz : (dir == BlockMachine.DIR_NORTH  ? -horiz : (dir == BlockMachine.DIR_EAST ? depth : -depth)));
+					int y = this.yCoord + vert;
+					int z = this.zCoord + (dir == BlockMachine.DIR_SOUTH ? depth : (dir == BlockMachine.DIR_NORTH  ? -depth : horiz));
+					
+					int blockId = this.worldObj.getBlockId(x, y, z);
+
+					if (horiz == 0 && vert == 1 && depth == 2) {
+						if (blockId == Block.blockEmerald.blockID) {
+							type = 2;
+						} else if (blockId != 0) {
+							return 0;
+						}
+					} else if (blockId != Block.blockIron.blockID) {
+						return 0;
+					}
+				}
+			}
+		}
+
+		return type;
+	}
+
 	// getter / setter
 
 	public int getIngredientID() {
-		return ingredientID;
+		return this.ingredientID;
 	}
 
 	public void setIngredientID(int ingredientID) {
