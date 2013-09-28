@@ -24,7 +24,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 	protected int[] lastFluidIDs;
 	protected int[] lastFluidAmounts;
 
-	public ContainerMachine(InventoryPlayer inventoryPlayer, T tileEntity) {
+	public ContainerMachine(InventoryPlayer inventoryPlayer, T tileEntity, int inventoryOffsetY) {
 		int tankCount = tileEntity.getFluidTanks().length;
 		
 		this.tileEntity = tileEntity;
@@ -33,12 +33,12 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, (84 + i * 18) + inventoryOffsetY));
 			}
 		}
 
 		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
+			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142 + inventoryOffsetY));
 		}
 	}
 

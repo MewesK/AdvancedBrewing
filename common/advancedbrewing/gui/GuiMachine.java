@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import advancedbrewing.PotionDefinition;
+import advancedbrewing.tileentity.TileEntityBrewery;
 import advancedbrewing.tileentity.TileEntityMachine;
 import advancedbrewing.tileentity.TileEntityPowered;
 import advancedbrewing.utils.Localization;
@@ -76,7 +77,7 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
 
-		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize + (tileEntity instanceof TileEntityBrewery ? 22 : 0));
 
 		float storedEnergy = this.tileEntity.getPowerHandler().getEnergyStored();
 		if (storedEnergy > 0) {

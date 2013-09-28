@@ -113,4 +113,8 @@ public class Utils {
 			applyPotionEffects(potionID, entityLivingBase);
 		}
 	}
+	
+	public static int getItemIDByItemStack(ItemStack itemStack) {
+		return itemStack == null ? -1 : itemStack.itemID;
+	}
 }

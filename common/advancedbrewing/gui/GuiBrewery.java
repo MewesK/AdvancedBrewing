@@ -9,7 +9,7 @@ import advancedbrewing.tileentity.TileEntityMachine;
 public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 
 	public GuiBrewery(InventoryPlayer inventoryPlayer, TileEntityBrewery tileEntity) {
-		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", "textures/gui/brewery.png"));
+		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", tileEntity.getType() > 0 ? "textures/gui/brewery_multi.png" : "textures/gui/brewery.png"));
 	}
 
 	@Override
@@ -30,13 +30,13 @@ public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 		int inputFluidAmount = fluidTanks[0].getFluidAmount();
 		if (inputFluidAmount > 0) {
 			float gaugeHeight = (((float) inputFluidAmount) / ((float) TileEntityMachine.MAX_FLUIDAMOUNT)) * 58f;
-			this.displayFluidGauge(x, y, 20, 44, (int) gaugeHeight, fluidTanks[0].getFluid());
+			this.displayFluidGauge(x, y, 20, 34, (int) gaugeHeight, fluidTanks[0].getFluid());
 		}
 
 		int outputFluidAmount = fluidTanks[1].getFluidAmount();
 		if (outputFluidAmount > 0) {
 			float gaugeHeight = (((float) outputFluidAmount) / ((float) TileEntityMachine.MAX_FLUIDAMOUNT)) * 58f;
-			this.displayFluidGauge(x, y, 20, 116, (int) gaugeHeight, fluidTanks[1].getFluid());
+			this.displayFluidGauge(x, y, 20, 126, (int) gaugeHeight, fluidTanks[1].getFluid());
 		}
 	}
 }
