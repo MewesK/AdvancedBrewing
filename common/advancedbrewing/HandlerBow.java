@@ -26,25 +26,22 @@ public class HandlerBow {
 	@ForgeSubscribe
 	public void onArrowNock(ArrowNockEvent event) {
 		if (event.entityPlayer.inventory.hasItem(AdvancedBrewing.arrowPotionItem.itemID)) {
-			event.entityPlayer.setItemInUse(event.result, Item.bow.getMaxItemUseDuration(event.result));
-			event.setCanceled(true);
+			int slotIndex = Utils.getSlotIndexByItemID(event.entityPlayer.inventory, AdvancedBrewing.arrowPotionItem.itemID);
+			int slotIndexVanilla = Utils.getSlotIndexByItemID(event.entityPlayer.inventory, Item.arrow.itemID);
+			if (slotIndex >= 0 && (slotIndexVanilla < 0 || slotIndexVanilla > slotIndex)) {
+				event.entityPlayer.setItemInUse(event.result, Item.bow.getMaxItemUseDuration(event.result));
+				event.setCanceled(true);
+			}
 		}
 	}
 
 	@ForgeSubscribe
 	public void onArrowLoose(ArrowLooseEvent event) {
 		if (event.entityPlayer.inventory.hasItem(AdvancedBrewing.arrowPotionItem.itemID)) {
-			int inventorySlot = -1;
-
-			for (int i = 0; i < event.entityPlayer.inventory.mainInventory.length; ++i) {
-				if (event.entityPlayer.inventory.mainInventory[i] != null && event.entityPlayer.inventory.mainInventory[i].itemID == AdvancedBrewing.arrowPotionItem.itemID) {
-					inventorySlot = i;
-					break;
-				}
-			}
-
-			if (inventorySlot >= 0) {
-				ItemStack itemStack = event.entityPlayer.inventory.getStackInSlot(inventorySlot);
+			int slotIndex = Utils.getSlotIndexByItemID(event.entityPlayer.inventory, AdvancedBrewing.arrowPotionItem.itemID);
+			int slotIndexVanilla = Utils.getSlotIndexByItemID(event.entityPlayer.inventory, Item.arrow.itemID);
+			if (slotIndex >= 0 && (slotIndexVanilla < 0 || slotIndexVanilla > slotIndex)) {
+				ItemStack itemStack = event.entityPlayer.inventory.getStackInSlot(slotIndex);
 
 				float charge = event.charge / 20.0F;
 				charge = (charge * charge + charge * 2.0F) / 3.0F;

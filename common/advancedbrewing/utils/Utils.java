@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
@@ -116,5 +117,16 @@ public class Utils {
 	
 	public static int getItemIDByItemStack(ItemStack itemStack) {
 		return itemStack == null ? -1 : itemStack.itemID;
+	}
+	
+	public static int getSlotIndexByItemID(InventoryPlayer inventory, int itemID) {
+		int slotIndex = -1;
+		for (int i = 0; i < inventory.mainInventory.length; ++i) {
+			if (inventory.mainInventory[i] != null && inventory.mainInventory[i].itemID == itemID) {
+				slotIndex = i;
+				break;
+			}
+		}
+		return slotIndex;
 	}
 }

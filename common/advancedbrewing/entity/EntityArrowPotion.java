@@ -22,6 +22,11 @@ public class EntityArrowPotion extends EntityArrow {
 		super(par1World, par2, par4, par6);
 		this.setDamage(0);
 	}
+	
+	public EntityArrowPotion(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
+		super(par1World, par2EntityLivingBase, par3);
+		this.setDamage(0);
+	}
 
 	public EntityArrowPotion(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
 		super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
@@ -51,11 +56,6 @@ public class EntityArrowPotion extends EntityArrow {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public EntityArrowPotion(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-		super(par1World, par2EntityLivingBase, par3);
-		this.setDamage(0);
 	}
 
 	@Override
