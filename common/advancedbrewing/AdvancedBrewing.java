@@ -41,7 +41,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(name = "AdvancedBrewing", version = "0.0.2", useMetadata = false, modid = "AdvancedBrewing", acceptedMinecraftVersions = "[1.6,1.7)", dependencies = "required-after:Forge@[9.10.0.800,)")
+@Mod(name = "AdvancedBrewing", version = "0.1.0", useMetadata = false, modid = "AdvancedBrewing", acceptedMinecraftVersions = "[1.6,1.7)", dependencies = "required-after:Forge@[9.10.0.800,)")
 @NetworkMod(clientSideRequired = true, serverSideRequired = true)
 public class AdvancedBrewing {
 
