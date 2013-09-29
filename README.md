@@ -1,2 +1,2 @@
-## AdvancedBrewing
+## AdvancedBrewing @VERSION@
 

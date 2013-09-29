@@ -41,7 +41,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(name = "AdvancedBrewing", version = "0.1.0", useMetadata = false, modid = "AdvancedBrewing", acceptedMinecraftVersions = "[1.6,1.7)", dependencies = "required-after:Forge@[9.10.0.800,)")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION_NUMBER, dependencies = Reference.DEPENDENCIES)
 @NetworkMod(clientSideRequired = true, serverSideRequired = true)
 public class AdvancedBrewing {
 
@@ -69,7 +69,7 @@ public class AdvancedBrewing {
 	@Instance("AdvancedBrewing")
 	public static AdvancedBrewing instance;
 
-	@SidedProxy(clientSide = "advancedbrewing.proxy.ProxyClient", serverSide = "advancedbrewing.proxy.Proxy")
+	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static Proxy proxy;
 
 	@EventHandler

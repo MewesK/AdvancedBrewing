@@ -2,7 +2,7 @@
 {
   "modid": "AdvancedBrewing",
   "name": "AdvancedBrewing",
-  "version": "0.1.0",
+  "version": "@VERSION@",
   "mcversion": "",
   "description": "AdvancedBrewing",
   "credits": "...",
