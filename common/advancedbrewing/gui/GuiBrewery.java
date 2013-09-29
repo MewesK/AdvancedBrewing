@@ -10,6 +10,7 @@ public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 
 	public GuiBrewery(InventoryPlayer inventoryPlayer, TileEntityBrewery tileEntity) {
 		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", tileEntity.getType() > 0 ? "textures/gui/brewery_multi.png" : "textures/gui/brewery.png"));
+        this.ySize = 188;
 	}
 
 	@Override

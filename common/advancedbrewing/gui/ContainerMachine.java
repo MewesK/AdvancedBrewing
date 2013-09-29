@@ -30,13 +30,15 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		this.tileEntity = tileEntity;
 		this.lastFluidIDs = new int[tankCount];
 		this.lastFluidAmounts = new int[tankCount];
-		
+
+		// add player inventory slots
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, (84 + i * 18) + inventoryOffsetY));
+				this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + inventoryOffsetY + i * 18));
 			}
 		}
 
+		// add player hotbar slots
 		for (int i = 0; i < 9; ++i) {
 			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142 + inventoryOffsetY));
 		}
@@ -153,6 +155,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 	}
 
 	@Override
+	// TODO
 	public ItemStack transferStackInSlot(EntityPlayer player, int par2) {
 		ItemStack itemstack = null;
 		Slot slot = (Slot) this.inventorySlots.get(par2);

@@ -15,10 +15,12 @@ public class ContainerBrewery extends ContainerMachine<TileEntityBrewery> {
 		this.addSlotToContainer(new SlotBreweryEmptyContainer(tileEntity, 1, 152, 41));
 		
 		// ingredient slot(s)
-		this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 2, 80, 20));
 		if (tileEntity.getType() > 0) {
-			this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 3, 62, 20));
+			this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 2, 62, 20));
+			this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 3, 80, 20));
 			this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 4, 98, 20));
+		} else {
+			this.addSlotToContainer(new SlotBreweryPotionIngredientGhost(tileEntity, 2, 80, 20));
 		}
 			
 		// ingredient buffer

@@ -18,7 +18,7 @@ public class SlotBreweryPotionIngredientGhost extends Slot {
 
 	@Override
 	public int getSlotStackLimit() {
-		return 64;
+		return 1;
 	}
 
 	public static boolean isItemValidForSlot(ItemStack par1ItemStack) {
