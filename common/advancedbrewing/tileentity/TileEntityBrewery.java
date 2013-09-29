@@ -29,7 +29,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 	public static int MAX_WORKTIME_MULTI = 300;
 
 	// properties
-	private int[] ingredientIDs;
+	private int[] ingredientIDs = new int[3];
 	private int type = 0;
 
 	public TileEntityBrewery() {
@@ -118,6 +118,19 @@ public class TileEntityBrewery extends TileEntityMachine {
 		return false;
 	}
 
+	private void removeItemFromBuffer(int itemID, int amount) {
+		if (itemID < 0 || amount <= 0) {
+			return;
+		}
+		for (int i = 0; i < 9; i++) {
+			ItemStack itemStack = this.itemStacks[i + 5];
+			if (itemStack != null && itemStack.itemID == itemID && itemStack.stackSize >= amount) {
+				decrStackSize(i + 5, amount);
+				return;
+			}
+		}
+	}
+
 	// TileEntityMachine
 
 	@Override
@@ -168,8 +181,8 @@ public class TileEntityBrewery extends TileEntityMachine {
 				ItemStack itemStack = this.itemStacks[i];
 				if (itemStack != null && this.hasItemInBuffer(itemStack.itemID) && Item.itemsList[itemStack.itemID].isPotionIngredient()) {
 					validIngredients.add(itemStack);
-					// remove item
-					decrStackSize(i, 1);
+					// remove item from buffer
+					this.removeItemFromBuffer(itemStack.itemID, 1);
 				}
 			}
 
