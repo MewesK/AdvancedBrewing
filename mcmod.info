@@ -1,10 +1,10 @@
 [
 {
   "modid": "AdvancedBrewing",
-  "name": "AdvancedBrewing",
-  "version": "@VERSION@",
+  "name": "Advanced Brewing",
+  "version": "@VERSION@.@BUILD_NUMBER@",
   "mcversion": "",
-  "description": "AdvancedBrewing",
+  "description": "Industrial brewing and additional potion usages.",
   "credits": "...",
   "logoFile": "/assets/advancedbrewing/logo.png",
   "url": "http://advancedbrewing.mewk.net/",

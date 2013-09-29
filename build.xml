@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?eclipse.ant.import?>
-<project basedir="." name="AdvanncedBrewing">
+<project name="AdvanncedBrewing" default="build">
 	<property file="build.properties" prefix="build" />
 	<property file="environment.properties" prefix="environment" />
 
@@ -34,11 +34,12 @@
 
 	<target name="forge-clean-install" depends="forge-clean, forge-install" />
 
+	<!-- Advanced Brewing -->
 	<target name="clean">
 		<delete dir="${environment.base_location}/temp" />
 		<delete file="${environment.mcp_location}/src/minecraft/mcmod.info" />
-		<delete file="${environment.mcp_location}/src/minecraft/pack.mcmeta" />
 		<delete dir="${environment.mcp_location}/src/minecraft/advancedbrewing" />
+		<delete dir="${environment.mcp_location}/src/minecraft/buildcraft" />
 		<delete dir="${environment.mcp_location}/reobf/minecraft" />
 	</target>
 
@@ -51,10 +52,14 @@
 	<target name="prep">
 		<copy todir="${environment.mcp_location}/src/minecraft">
 			<fileset dir="${environment.source_location}/common/" />
+			<fileset file="${environment.source_location}/mcmod.info" />
 		</copy>
 	</target>
 
 	<target name="replace_tokens">
+		<replace file="${environment.source_location}/README.md" token="@VERSION@" value="${build.mod_version}" />
+		<replace file="${environment.mcp_location}/src/minecraft/mcmod.info" token="@VERSION@" value="${build.mod_version}" />
+		<replace file="${environment.mcp_location}/src/minecraft/mcmod.info" token="@BUILD_NUMBER@" value="${build.build_number}" />
 		<replace dir="${environment.mcp_location}/src/minecraft/advancedbrewing" token="@VERSION@" value="${build.mod_version}" />
 		<replace dir="${environment.mcp_location}/src/minecraft/advancedbrewing" token="@BUILD_NUMBER@" value="${build.build_number}" />
 	</target>
@@ -77,33 +82,15 @@
 		</exec>
 	</target>
 
-	<target name="build" depends="clean, increment_build_number, prep, recompile, reobfuscate">
-
-		<!-- Build the jar -->
-		<mkdir dir="${environment.release_location} ${build.minecraft_version}/${build.mod_version}" />
-		<jar destfile="${environment.release_location} ${build.minecraft_version}/${build.mod_version}/advancedbrewing-universal-${build.mod_version}-${build.build_number}.jar">
+	<target name="build" depends="clean, increment_build_number, prep, replace_tokens, recompile, reobfuscate">
+		<!-- Build jar -->
+		<mkdir dir="${environment.release_location}/${build.minecraft_version}/${build.mod_version}" />
+		<jar destfile="${environment.release_location}/${build.minecraft_version}/${build.mod_version}/advancedbrewing-universal-${build.mod_version}.${build.build_number}.jar">
 			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="mcmod.info" />
-			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="pack.mcmeta" />
 			<fileset dir="${environment.mcp_location}/reobf/minecraft" />
-			<fileset dir="${environment.source_location}/resources" excludes="**/xcf/**" />
+			<fileset dir="${environment.source_location}/resources" />
 		</jar>
-
-		<!-- Clean up the MCP source now that we are done -->
-		<antcall target="clean" />
-	</target>
-
-	<target name="release" depends="clean, increment_build_number, prep, replace_tokens, recompile, reobfuscate">
-
-		<!-- Build the jar -->
-		<mkdir dir="${environment.release_location} ${build.minecraft_version}/${build.mod_version}" />
-		<jar destfile="${environment.release_location} ${build.minecraft_version}/${build.mod_version}/advancedbrewing-universal-${build.mod_version}-${build.build_number}.jar">
-			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="mcmod.info" />
-			<fileset dir="${environment.mcp_location}/src/minecraft/" includes="pack.mcmeta" />
-			<fileset dir="${environment.mcp_location}/reobf/minecraft" />
-			<fileset dir="${environment.source_location}/resources" excludes="**/xcf/**" />
-		</jar>
-
-		<!-- Clean up the MCP source now that we are done -->
+		<!-- Clean up -->
 		<antcall target="clean" />
 	</target>
 </project>
