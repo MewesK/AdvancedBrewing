@@ -9,6 +9,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.block.BlockInfuser;
 import advancedbrewing.utils.Utils;
@@ -193,6 +194,11 @@ public class TileEntityInfuser extends TileEntityMachine {
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
 		return this.fluidTanks[0].drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+		return new FluidTankInfo[] { this.fluidTanks[0].getInfo() };
 	}
 
 	// getter / setter

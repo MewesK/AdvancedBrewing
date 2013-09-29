@@ -216,9 +216,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-		return new FluidTankInfo[] { this.fluidTanks[1].getInfo() };
-	}
+	public abstract FluidTankInfo[] getTankInfo(ForgeDirection from);
 
 	// TileEntityMachine
 
@@ -262,7 +260,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 				int fluidAmount = tag.getInteger("FluidAmount");
 				Fluid fluid = FluidRegistry.getFluid(tag.getString("FluidName"));
 				if ((fluid == null || fluidTank.getFluid().getFluid() == fluid) && fluidAmount + FluidContainerRegistry.BUCKET_VOLUME <= ItemAutoPotion.MAX_FLUIDAMOUNT) {
-					PotionDefinition potionDefinition = Utils.getPotionDefinitionByFluid(fluid);
+					PotionDefinition potionDefinition = Utils.getPotionDefinitionByFluid(fluidTank.getFluid().getFluid());
 					if (potionDefinition != null) {
 						boolean success = false;
 						if (itemStackInputIndex == itemStackOutputIndex) {
@@ -290,7 +288,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 					}
 				}
 			}
-			else {
+			else if (itemStack.getItem().itemID == Item.bucketEmpty.itemID || itemStack.getItem().itemID == Item.glassBottle.itemID) {
 				ItemStack itemStackFilled = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), itemStack);
 				if (itemStack != null) {
 					boolean success = false;

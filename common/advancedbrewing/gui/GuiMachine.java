@@ -101,7 +101,7 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 
 		PotionDefinition potionDefinition = Utils.getPotionDefinitionByFluid(fluid);
 		
-		if (potionDefinition != null) {
+		if (potionDefinition != null && !potionDefinition.getName().equals("water")) {
             int color = potionDefinition.getColor();
             float r = (color >> 16 & 255) / 255.0F;
             float g = (color >> 8 & 255) / 255.0F;

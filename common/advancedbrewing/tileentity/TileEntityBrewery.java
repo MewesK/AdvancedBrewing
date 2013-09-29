@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.PotionDefinition;
 import advancedbrewing.block.BlockBrewery;
@@ -268,6 +269,11 @@ public class TileEntityBrewery extends TileEntityMachine {
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
 		return this.fluidTanks[1].drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+		return new FluidTankInfo[] { this.fluidTanks[1].getInfo() };
 	}
 
 	// Multi
