@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 /**
- * Simple mod localization class.
- * 
- * @author Jimeo Wan
- * @license Public domain
- */
+* Simple mod localization class.
+*
+* @author Jimeo Wan
+* @license Public domain
+*/
 public class Localization {
 
 	private static class modInfo {
