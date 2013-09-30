@@ -168,6 +168,14 @@ public class AdvancedBrewing {
 
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
+		// add recipes
+		ItemStack ironIngotStack = new ItemStack(Item.ingotIron);
+		ItemStack redstoneStack = new ItemStack(Item.redstone);		
+        GameRegistry.addRecipe(new ItemStack(breweryIdleBlock), "xxx", "xyx", "xzx", 'x', ironIngotStack, 'y', new ItemStack(Item.brewingStand), 'z', redstoneStack);
+        GameRegistry.addRecipe(new ItemStack(infuserIdleBlock), "xxx", "xyx", "xzx", 'x', ironIngotStack, 'y', new ItemStack(Block.hopperBlock), 'z', redstoneStack);
+        GameRegistry.addRecipe(new ItemStack(vaporizerIdleBlock), "xxx", "xyx", "xzx", 'x', ironIngotStack, 'y', new ItemStack(Block.dispenser), 'z', redstoneStack);
+        GameRegistry.addRecipe(new ItemStack(autoPotionItem), "xxx", "xyx", "xxx", 'x', new ItemStack(Item.glassBottle), 'y', new ItemStack(Item.pocketSundial));
+		
 		// register handlers
 		MinecraftForge.EVENT_BUS.register(new HandlerTexture());
 		MinecraftForge.EVENT_BUS.register(new HandlerBucket());
