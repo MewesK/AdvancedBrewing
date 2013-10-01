@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
 public class ItemAutoPotion extends ItemBucketPotion {
-	public static int MAX_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 128;
+	public static int MAX_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 64;
 
 	@SideOnly(Side.CLIENT)
 	protected Icon iconItemOn;
