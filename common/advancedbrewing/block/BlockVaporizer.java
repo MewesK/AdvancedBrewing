@@ -17,7 +17,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class BlockVaporizer extends BlockMachine<TileEntityVaporizer> {
@@ -35,6 +38,22 @@ public class BlockVaporizer extends BlockMachine<TileEntityVaporizer> {
 	@SideOnly(Side.CLIENT)
 	public int idPicked(World par1World, int par2, int par3, int par4) {
 		return AdvancedBrewing.vaporizerIdleBlock.blockID;
+	}
+
+	@Override
+	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+		if (MathHelper.abs((float) par5EntityLivingBase.posX - par2) < 2.0F && MathHelper.abs((float) par5EntityLivingBase.posZ - par4) < 2.0F) {
+			double posY = par5EntityLivingBase.posY + 1.82D - par5EntityLivingBase.yOffset;
+			if (posY - par3 > 2.0D) {
+				par1World.setBlockMetadataWithNotify(par2, par3, par4, 1, 2);
+				return;
+			}
+			if (par3 - posY > 0.0D) {
+				par1World.setBlockMetadataWithNotify(par2, par3, par4, 0, 2);
+				return;
+			}
+		}
+		super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
 	}
 
 	@Override

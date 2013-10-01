@@ -86,10 +86,7 @@ public class ItemGlintOverlayRenderer implements IItemRenderer {
                 tessellator.draw();
 			}
 		}
-		else if (type == ItemRenderType.EQUIPPED) {
-			this.renderItem3D(type, itemStack, data);
-		}
-		else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
+		else if (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
 			this.renderItem3D(type, itemStack, data);
 		}
 		else if (type == ItemRenderType.INVENTORY) {

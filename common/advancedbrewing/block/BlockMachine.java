@@ -23,8 +23,6 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -33,12 +31,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public abstract class BlockMachine<T extends TileEntityMachine> extends BlockContainer {
-	
+
 	public static final int DIR_SOUTH = 0x02;
 	public static final int DIR_EAST = 0x04;
 	public static final int DIR_NORTH = 0x03;
 	public static final int DIR_WEST = 0x05;
-	
+	public static final int[] DIRS = new int[] { DIR_SOUTH, DIR_WEST, DIR_NORTH, DIR_EAST };
+
 	protected final Random rand = new Random();
 	protected final boolean isActive;
 	protected static boolean keepInventory;
@@ -56,24 +55,10 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 	}
 
 	@Override
-	public int getComparatorInputOverride(World world, int par2, int par3, int par4, int par5) {
-		return Container.calcRedstoneFromInventory((IInventory) world.getBlockTileEntity(par2, par3, par4));
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int par1, int par2) {
-		// inventory rendering
-		if (par2 == 0 && par1 == 3) {
-			return this.iconFront;
-		}
-		// block rendering
-		return par1 == 1 ? this.iconTop : (par1 == 0 ? this.iconTop : (par1 != par2 ? this.blockIcon : this.iconFront));
-	}
-
-	@Override
-	public boolean hasComparatorInputOverride() {
-		return true;
+	public Icon getIcon(int side, int metadata) {
+		int k = metadata & 7;
+		return side == k ? this.iconFront : (k != 1 && k != 0 ? (side != 1 && side != 0 ? this.blockIcon : this.iconTop) : this.iconTop);
 	}
 
 	@Override
@@ -109,7 +94,7 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 			int i1 = world.getBlockId(par2, par3, par4 + 1);
 			int j1 = world.getBlockId(par2 - 1, par3, par4);
 			int k1 = world.getBlockId(par2 + 1, par3, par4);
-			byte dir = 3;
+			byte dir = DIR_NORTH;
 
 			if (Block.opaqueCubeLookup[l] && !Block.opaqueCubeLookup[i1]) {
 				dir = DIR_NORTH;
@@ -126,7 +111,7 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 			if (Block.opaqueCubeLookup[k1] && !Block.opaqueCubeLookup[j1]) {
 				dir = DIR_EAST;
 			}
-			
+
 			world.setBlockMetadataWithNotify(par2, par3, par4, dir, 2);
 		}
 	}
@@ -143,23 +128,8 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 
 	@Override
 	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
-		int l = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
-		if (l == 0) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_SOUTH, 2);
-		}
-
-		if (l == 1) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_WEST, 2);
-		}
-
-		if (l == 2) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_NORTH, 2);
-		}
-
-		if (l == 3) {
-			par1World.setBlockMetadataWithNotify(par2, par3, par4, DIR_EAST, 2);
-		}
+		int dir = DIRS[MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3];
+		par1World.setBlockMetadataWithNotify(par2, par3, par4, dir, 2);
 	}
 
 	@Override
