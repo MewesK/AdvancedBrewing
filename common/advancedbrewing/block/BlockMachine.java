@@ -32,9 +32,11 @@ import net.minecraft.world.World;
 
 public abstract class BlockMachine<T extends TileEntityMachine> extends BlockContainer {
 
+	public static final int DIR_BOTTOM = 0x00;
+	public static final int DIR_TOP = 0x01;
 	public static final int DIR_SOUTH = 0x02;
-	public static final int DIR_EAST = 0x04;
 	public static final int DIR_NORTH = 0x03;
+	public static final int DIR_EAST = 0x04;
 	public static final int DIR_WEST = 0x05;
 	public static final int[] DIRS = new int[] { DIR_SOUTH, DIR_WEST, DIR_NORTH, DIR_EAST };
 

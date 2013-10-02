@@ -13,6 +13,7 @@ import java.util.List;
 
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.PotionDefinition;
+import advancedbrewing.block.BlockMachine;
 import advancedbrewing.block.BlockVaporizer;
 import advancedbrewing.gui.SlotBreweryPotionContainer;
 import advancedbrewing.utils.Utils;
@@ -122,27 +123,39 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@SuppressWarnings({ "unchecked" })
 	protected boolean work() {
 		if (this.canWork()) {
+			int radius = 1;
+			
 			int xOffset = 0;
+			int yOffset = 0;
 			int zOffset = 0;
 
-			// north
-			if (this.blockMetadata == 2) {
+			if (this.blockMetadata == BlockMachine.DIR_BOTTOM) {
+				yOffset--;
+			}
+			else if (this.blockMetadata == BlockMachine.DIR_TOP) {
+				yOffset++;
+			}
+			else if (this.blockMetadata == BlockMachine.DIR_SOUTH) {
 				zOffset--;
 			}
-			// south
-			else if (this.blockMetadata == 3) {
+			else if (this.blockMetadata == BlockMachine.DIR_NORTH) {
 				zOffset++;
 			}
-			// west
-			else if (this.blockMetadata == 4) {
+			else if (this.blockMetadata == BlockMachine.DIR_EAST) {
 				xOffset--;
 			}
-			// east
-			else if (this.blockMetadata == 5) {
+			else if (this.blockMetadata == BlockMachine.DIR_WEST) {
 				xOffset++;
 			}
 
-			AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(this.xCoord + xOffset, this.yCoord, this.zCoord + zOffset, this.xCoord + xOffset + 1, this.yCoord + 1, this.zCoord + zOffset + 1);
+			AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(
+					this.xCoord + xOffset + radius - 1, 
+					this.yCoord + yOffset + radius - 1, 
+					this.zCoord + zOffset + radius - 1, 
+					this.xCoord + xOffset + 1 + radius - 1, 
+					this.yCoord + yOffset + 1 + radius - 1, 
+					this.zCoord + zOffset + 1 + radius - 1);
+			
 			List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
 			if (entities != null && entities.size() > 0) {
     			PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
@@ -159,7 +172,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 				}
 				if (willHaveEffect) {
 					Utils.applyPotionEffects(potionDefinitionBase.getPotionID(), entities);
-					this.fluidTanks[0].drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+					this.fluidTanks[0].drain((radius * 2 - 1) * FluidContainerRegistry.BUCKET_VOLUME, true);
 					
 					return true;
 				}

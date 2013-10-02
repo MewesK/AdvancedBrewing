@@ -45,11 +45,11 @@ public class BlockVaporizer extends BlockMachine<TileEntityVaporizer> {
 		if (MathHelper.abs((float) par5EntityLivingBase.posX - par2) < 2.0F && MathHelper.abs((float) par5EntityLivingBase.posZ - par4) < 2.0F) {
 			double posY = par5EntityLivingBase.posY + 1.82D - par5EntityLivingBase.yOffset;
 			if (posY - par3 > 2.0D) {
-				par1World.setBlockMetadataWithNotify(par2, par3, par4, 1, 2);
+				par1World.setBlockMetadataWithNotify(par2, par3, par4, BlockMachine.DIR_TOP, 2);
 				return;
 			}
 			if (par3 - posY > 0.0D) {
-				par1World.setBlockMetadataWithNotify(par2, par3, par4, 0, 2);
+				par1World.setBlockMetadataWithNotify(par2, par3, par4, BlockMachine.DIR_BOTTOM, 2);
 				return;
 			}
 		}
