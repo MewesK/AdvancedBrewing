@@ -125,10 +125,12 @@ public abstract class GuiLedgered extends GuiContainer {
 	/**
 	 * Side ledger for guis
 	 */
-	protected abstract class Ledger {
-
+	protected abstract class Ledger {		
 		private boolean open;
 		protected int overlayColor = 0xffffff;
+		protected int headerColour = 0xe1c92f;
+		protected int subheaderColour = 0xaaafb8;
+		protected int textColour = 0x000000;
 		public int currentShiftX = 0;
 		public int currentShiftY = 0;
 		protected int limitWidth = 128;

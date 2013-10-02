@@ -27,11 +27,7 @@ import advancedbrewing.utils.Utils;
 public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgered {
 	
 	protected class EnergyLedger extends Ledger {
-
-		TileEntityPowered tileEntityPowered;
-		int headerColour = 0xe1c92f;
-		int subheaderColour = 0xaaafb8;
-		int textColour = 0x000000;
+		protected TileEntityPowered tileEntityPowered;
 
 		public EnergyLedger(TileEntityPowered tileEntityPowered) {
 			this.tileEntityPowered = tileEntityPowered;
@@ -64,6 +60,55 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 			return String.format("%3.2f MJ/t", tileEntityPowered.getRecentEnergyAverage());
 		}
 	}
+	protected class InfoLedger extends Ledger {
+		public InfoLedger() {
+			maxHeight = 94;
+			overlayColor = 0x085ca1;
+		}
+
+		@Override
+		public void draw(int x, int y) {
+			drawBackground(x, y);
+			drawIcon(x, y, 1, 0);
+
+			if (!isFullyOpened()) {
+				return;
+			}
+			
+			fontRenderer.drawStringWithShadow(Localization.get("gui.info.text"), x + 22, y + 8, headerColour);
+		}
+
+		@Override
+		public String getTooltip() {
+			return "";
+		}
+	}
+	protected class RedstoneLedger extends Ledger {
+		TileEntityPowered tileEntityPowered;
+
+		public RedstoneLedger(TileEntityPowered tileEntityPowered) {
+			this.tileEntityPowered = tileEntityPowered;
+			maxHeight = 94;
+			overlayColor = 0xa11b08;
+		}
+
+		@Override
+		public void draw(int x, int y) {
+			drawBackground(x, y);
+			drawIcon(x, y, 5, 0);
+
+			if (!isFullyOpened()) {
+				return;
+			}
+			
+			fontRenderer.drawStringWithShadow(Localization.get("gui.redstone.text"), x + 22, y + 8, headerColour);
+		}
+
+		@Override
+		public String getTooltip() {
+			return "";
+		}
+	}
 	
 	protected static ResourceLocation TEXTURE;
 	protected static final ResourceLocation BLOCK_TEXTURE = TextureMap.locationBlocksTexture;
@@ -74,6 +119,8 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 		super(container);
 		this.tileEntity = tileEntity;
 		this.ledgerManager.add(new EnergyLedger(tileEntity));
+		this.ledgerManager.add(new InfoLedger());
+		this.ledgerManager.add(new RedstoneLedger(tileEntity));
 		TEXTURE = texture;
 	}
 
