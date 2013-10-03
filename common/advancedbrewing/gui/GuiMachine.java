@@ -9,8 +9,14 @@
 
 package advancedbrewing.gui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.List;
+
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
@@ -18,6 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import advancedbrewing.PotionDefinition;
 import advancedbrewing.tileentity.TileEntityMachine;
 import advancedbrewing.tileentity.TileEntityPowered;
@@ -31,26 +38,28 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 
 		public EnergyLedger(TileEntityPowered tileEntityPowered) {
 			this.tileEntityPowered = tileEntityPowered;
+			
 			maxHeight = 94;
 			overlayColor = 0xd46c1f;
+			iconOffsetX = 0;
+			iconOffsetY = 0;
 		}
 
 		@Override
 		public void draw(int x, int y) {
-			drawBackground(x, y);
-			drawIcon(x, y, 0, 0);
-
+			super.draw(x, y);
+			
 			if (!isFullyOpened()) {
 				return;
 			}
 			
-			fontRenderer.drawStringWithShadow(Localization.get("gui.energy.text"), x + 22, y + 8, headerColour);
+			fontRenderer.drawStringWithShadow(Localization.get("gui.energy.title"), x + 22, y + 8, headerColour);
 
-			fontRenderer.drawStringWithShadow(Localization.get("gui.currentInput.text") + ":", x + 22, y + 20, subheaderColour);
+			fontRenderer.drawStringWithShadow(Localization.get("gui.energy.currentInput.text") + ":", x + 22, y + 20, subheaderColour);
 			fontRenderer.drawString(String.format("%.1f MJ/t", tileEntityPowered.getCurrentInput()), x + 22, y + 32, textColour);
-			fontRenderer.drawStringWithShadow(Localization.get("gui.stored.text") + ":", x + 22, y + 44, subheaderColour);
+			fontRenderer.drawStringWithShadow(Localization.get("gui.energy.stored.text") + ":", x + 22, y + 44, subheaderColour);
 			fontRenderer.drawString(String.format("%2.1f MJ", tileEntityPowered.getPowerHandler().getEnergyStored()), x + 22, y + 56, textColour);
-			fontRenderer.drawStringWithShadow(Localization.get("gui.consumption.text") + ":", x + 22, y + 68, subheaderColour);
+			fontRenderer.drawStringWithShadow(Localization.get("gui.energy.consumption.text") + ":", x + 22, y + 68, subheaderColour);
 			fontRenderer.drawString(String.format("%3.2f MJ/t", tileEntityPowered.getRecentEnergyAverage()), x + 22, y + 80, textColour);
 
 		}
@@ -61,52 +70,71 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 		}
 	}
 	protected class InfoLedger extends Ledger {
-		public InfoLedger() {
-			maxHeight = 94;
+		protected List<String> info;
+		
+		@SuppressWarnings("unchecked")
+		public InfoLedger(String info) {
+			this.info = FMLClientHandler.instance().getClient().fontRenderer.listFormattedStringToWidth(info != null ? info : "", 96);
+			
+			maxHeight = 28 + this.info.size() * 12;
 			overlayColor = 0x085ca1;
+			iconOffsetX = 1;
+			iconOffsetY = 0;
 		}
 
 		@Override
-		public void draw(int x, int y) {
-			drawBackground(x, y);
-			drawIcon(x, y, 1, 0);
-
+		public void draw(int x, int y) {	
+			super.draw(x, y);
+			
 			if (!isFullyOpened()) {
 				return;
 			}
 			
-			fontRenderer.drawStringWithShadow(Localization.get("gui.info.text"), x + 22, y + 8, headerColour);
+			fontRenderer.drawStringWithShadow(Localization.get("gui.info.title"), x + 22, y + 8, headerColour);
+			
+			int yOffset = 0;
+			for (String info : this.info) {
+				fontRenderer.drawString(info, x + 22, y + 20 + yOffset, textColour);
+				yOffset += 12;
+			}
 		}
 
 		@Override
 		public String getTooltip() {
-			return "";
+			return Localization.get("gui.info.title");
 		}
 	}
-	protected class RedstoneLedger extends Ledger {
-		TileEntityPowered tileEntityPowered;
+	protected class ConfigLedger extends Ledger {
+		protected TileEntityMachine tileEntityMachine;
+		public GuiButtonIcon guiButtonRedstone;
 
-		public RedstoneLedger(TileEntityPowered tileEntityPowered) {
-			this.tileEntityPowered = tileEntityPowered;
-			maxHeight = 94;
-			overlayColor = 0xa11b08;
+		public ConfigLedger(TileEntityMachine tileEntityMachine) {
+			this.tileEntityMachine = tileEntityMachine;
+			
+			this.guiButtonRedstone = new GuiButtonIcon(0, 22, 20, tileEntityMachine.isRedstoneActivated() ? 0 : 1, 1);
+			this.buttonList.add(this.guiButtonRedstone);
+
+			maxHeight = 28 + this.buttonList.size() * 20;
+			overlayColor = 0x00baa1;
+			iconOffsetX = 2;
+			iconOffsetY = 0;
 		}
 
 		@Override
-		public void draw(int x, int y) {
-			drawBackground(x, y);
-			drawIcon(x, y, 5, 0);
-
+		public void draw(int x, int y) {			
+			super.draw(x, y);
+			
 			if (!isFullyOpened()) {
 				return;
-			}
+			}	
+			fontRenderer.drawStringWithShadow(Localization.get("gui.config.title"), x + 22, y + 8, headerColour);
 			
-			fontRenderer.drawStringWithShadow(Localization.get("gui.redstone.text"), x + 22, y + 8, headerColour);
+			fontRenderer.drawString(Localization.get("gui.config.restone"), x + 22 + this.guiButtonRedstone.xPosition_ + 2, y + this.guiButtonRedstone.yPosition_ + 6, textColour);
 		}
 
 		@Override
 		public String getTooltip() {
-			return "";
+			return Localization.get("gui.config.title");
 		}
 	}
 	
@@ -114,18 +142,44 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 	protected static final ResourceLocation BLOCK_TEXTURE = TextureMap.locationBlocksTexture;
 	
 	protected T tileEntity;
-
-	public GuiMachine(InventoryPlayer inventoryPlayer, T tileEntity, ContainerMachine<T> container, ResourceLocation texture) {
+	
+	public GuiMachine(InventoryPlayer inventoryPlayer, T tileEntity, ContainerMachine<T> container, ResourceLocation texture, String info) {
 		super(container);
 		this.tileEntity = tileEntity;
 		this.ledgerManager.add(new EnergyLedger(tileEntity));
-		this.ledgerManager.add(new InfoLedger());
-		this.ledgerManager.add(new RedstoneLedger(tileEntity));
+		this.ledgerManager.add(new InfoLedger(info));
+		this.ledgerManager.add(new ConfigLedger(tileEntity));
 		TEXTURE = texture;
 	}
 
 	@Override
+    protected void actionPerformed(GuiButton guiButton) {
+		if (guiButton.id == 0 && guiButton instanceof GuiButtonIcon) {
+			if (tileEntity.isRedstoneActivated()) {
+				 tileEntity.setRedstoneActivated(false);
+				((GuiButtonIcon) guiButton).iconIndexX = 1;
+			} else {
+				 tileEntity.setRedstoneActivated(true);
+				((GuiButtonIcon) guiButton).iconIndexX = 0;
+			}
+			
+            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            DataOutputStream dataoutputstream = new DataOutputStream(bytearrayoutputstream);
+
+            try {
+                dataoutputstream.writeInt(0);
+                dataoutputstream.writeBoolean(this.tileEntity.isRedstoneActivated());
+                this.mc.getNetHandler().addToSendQueue(new Packet250CustomPayload("AdvancedBrewing", bytearrayoutputstream.toByteArray()));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+		}
+    }
+    
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+		super.drawGuiContainerBackgroundLayer(par1, par2, par3);
+
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(TEXTURE);
 

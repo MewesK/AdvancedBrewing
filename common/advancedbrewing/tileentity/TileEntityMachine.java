@@ -34,6 +34,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	public static int MAX_WORKTIME = 0;
 
 	// properties
+	private boolean redstoneActivated;
 	protected int workTime;
 	protected ItemStack[] itemStacks;
 	protected FluidTank[] fluidTanks;
@@ -44,6 +45,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	protected void readCustomFromNBT(NBTTagCompound par1NBTTagCompound) {
 		super.readCustomFromNBT(par1NBTTagCompound);
 
+		this.redstoneActivated = par1NBTTagCompound.getBoolean("RedstoneActivated");
 		this.workTime = par1NBTTagCompound.getShort("WorkTime");
 		
 		NBTTagList nbttaglist1 = par1NBTTagCompound.getTagList("Slots");
@@ -70,6 +72,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	protected void writeCustomToNBT(NBTTagCompound par1NBTTagCompound) {
 		super.writeCustomToNBT(par1NBTTagCompound);
 
+		par1NBTTagCompound.setBoolean("RedstoneActivated", this.redstoneActivated);
 		par1NBTTagCompound.setShort("WorkTime", (short) this.workTime);
 		
 		NBTTagList nbttaglist1 = new NBTTagList();
@@ -327,6 +330,17 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	}
 
 	// getter / setter
+
+	public boolean isRedstoneActivated() {
+		return redstoneActivated;
+	}
+
+	public void setRedstoneActivated(boolean redstoneActivated) {
+		this.redstoneActivated = redstoneActivated;
+		
+		// synchronize with client
+		this.onInventoryChanged();
+	}
 
 	public int getWorkTime() {
 		return workTime;

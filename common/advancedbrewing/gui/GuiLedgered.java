@@ -10,12 +10,16 @@
 package advancedbrewing.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 /** 
  * Stolen from Buildcraft. Find the original here: https://github.com/BuildCraft/BuildCraft
@@ -86,12 +90,19 @@ public abstract class GuiLedgered extends GuiContainer {
 					continue;
 				}
 
-				ledger.draw(xSize, xPos);
+				for (GuiButtonIcon guiButton : ledger.getButtonList()) {
+					guiButton.xPosition = guiLeft + xSize + guiButton.xPosition_;
+					guiButton.yPosition = guiTop + xPos + guiButton.yPosition_;
+				}
+				
+				ledger.draw(guiLeft + xSize, guiTop + xPos);
 				xPos += ledger.getHeight();
 			}
+		}
 
+		protected void drawLedgerTooltips(int mouseX, int mouseY) {
 			Ledger ledger = getAtPosition(mouseX, mouseY);
-			if (ledger != null) {
+			if (ledger != null && !ledger.isOpen()) {
 				int startX = mouseX - ((gui.width - gui.xSize) / 2) + 12;
 				int startY = mouseY - ((gui.height - gui.ySize) / 2) - 12;
 
@@ -106,19 +117,27 @@ public abstract class GuiLedgered extends GuiContainer {
 			if (mouseButton == 0) {
 
 				Ledger ledger = this.getAtPosition(x, y);
-
+				
 				// Default action only if the mouse click was not handled by the ledger itself.
 				if (ledger != null && !ledger.handleMouseClicked(x, y, mouseButton)) {
+    				boolean cancelEvent = false;
+    				for (GuiButton guiButton : ledger.getButtonList()) {
+    					if (guiButton.mousePressed(FMLClientHandler.instance().getClient(), x, y)) {
+    						cancelEvent = true;
+    						break;
+    					}
+    				}
 
-					for (Ledger other : ledgers) {
-						if (other != ledger && other.isOpen()) {
-							other.toggleOpen();
-						}
-					}
-					ledger.toggleOpen();
-				}
+    				if (!cancelEvent) {
+    					for (Ledger other : ledgers) {
+    						if (other != ledger && other.isOpen()) {
+    							other.toggleOpen();
+    						}
+    					}
+    					ledger.toggleOpen();
+    				}
+    			}
 			}
-
 		}
 	}
 
@@ -141,6 +160,11 @@ public abstract class GuiLedgered extends GuiContainer {
 		protected int minHeight = 24;
 		protected int currentHeight = minHeight;
 
+		protected int iconOffsetX = 0;
+		protected int iconOffsetY = 0;
+		
+		protected List<GuiButtonIcon> buttonList = new ArrayList<GuiButtonIcon>();
+
 		public void update() {
 			// Width
 			if (open && currentWidth < maxWidth) {
@@ -161,7 +185,21 @@ public abstract class GuiLedgered extends GuiContainer {
 			return currentHeight;
 		}
 
-		public abstract void draw(int x, int y);
+		public void draw(int x, int y) {
+			drawBackground(x, y);
+			drawIcon(x, y, this.iconOffsetX, this.iconOffsetY);
+
+			if (!isFullyOpened()) {
+				for (GuiButton guiButton : this.buttonList) {
+					guiButton.drawButton = false;
+				}
+				return;
+			}
+
+			for (GuiButton guiButton : this.buttonList) {
+				guiButton.drawButton = true;
+			}
+		}
 
 		public abstract String getTooltip();
 
@@ -226,6 +264,10 @@ public abstract class GuiLedgered extends GuiContainer {
 			mc.renderEngine.bindTexture(LEDGER_ICONS_TEXTURE);
 			drawTexturedModalRect(x + 3, y + 4, xIndex * 16, yIndex * 16, 16, 16);
 		}
+
+		public List<GuiButtonIcon> getButtonList() {
+			return buttonList;
+		}
 	}
 
 	public GuiLedgered(Container par1Container) {
@@ -233,8 +275,13 @@ public abstract class GuiLedgered extends GuiContainer {
 	}
 
 	@Override
+	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+		ledgerManager.drawLedgers(par2, par3);
+	}
+
+	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		ledgerManager.drawLedgers(par1, par2);
+		ledgerManager.drawLedgerTooltips(par1, par2);
 	}
 	
 	@Override
@@ -252,4 +299,13 @@ public abstract class GuiLedgered extends GuiContainer {
 	public static Class getOpenedLedger() {
 		return openedLedger;
 	}
+	
+	@Override
+    @SuppressWarnings("unchecked")
+	public void initGui() {
+        super.initGui();
+        for (Ledger ledger : this.ledgerManager.ledgers) {
+        	this.buttonList.addAll(ledger.getButtonList());
+		}
+    }
 }

@@ -25,10 +25,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerMachine<T extends TileEntityMachine> extends Container {
 
-	protected T tileEntity;
+	private T tileEntity;
 	protected float lastStoredEnergy;
 	protected float lastRecentEnergyAverage;
 	protected float lastCurrentInput;
+	protected boolean lastRestoneActivated;
 	protected int lastWorkTime;
 	protected int[] lastFluidIDs;
 	protected int[] lastFluidAmounts;
@@ -65,6 +66,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		float storedEnergy = (int) this.tileEntity.getPowerHandler().getEnergyStored();
 		float recentEnergyAverage = this.tileEntity.calculateRecentEnergyAverage();
 		float currentInput = this.tileEntity.getCurrentInput();
+		boolean redstoneActivated = this.tileEntity.isRedstoneActivated();
 		int workTime = this.tileEntity.getWorkTime();
 		FluidTank[] fluidTanks = this.tileEntity.getFluidTanks();
 		
@@ -83,8 +85,12 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 				icrafting.sendProgressBarUpdate(this, 2, (int)(currentInput * 100));
 			}
 
+			if (this.lastRestoneActivated != redstoneActivated) {
+				icrafting.sendProgressBarUpdate(this, 3, redstoneActivated ? 1 : 0);
+			}
+
 			if (this.lastWorkTime != workTime) {
-				icrafting.sendProgressBarUpdate(this, 3, workTime);
+				icrafting.sendProgressBarUpdate(this, 4, workTime);
 			}
 			
 			for (int j = 0; j < this.lastFluidIDs.length; j++) {
@@ -106,6 +112,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		this.lastStoredEnergy = storedEnergy;
 		this.lastRecentEnergyAverage = recentEnergyAverage;
 		this.lastCurrentInput = currentInput;
+		this.lastRestoneActivated = redstoneActivated;
 		this.lastWorkTime = workTime;
 
 		for (int j = 0; j < this.lastFluidAmounts.length; j++) {
@@ -130,8 +137,11 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 				this.tileEntity.setCurrentInput(value / 100);
 				return;
 			case 3:
-					this.tileEntity.setWorkTime(value);
-					return;
+				this.tileEntity.setRedstoneActivated(value == 1 ? true : false);
+				return;
+			case 4:
+				this.tileEntity.setWorkTime(value);
+				return;
 		}
 		
 		FluidTank[] fluidTanks = this.tileEntity.getFluidTanks();
@@ -219,5 +229,11 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		}
 
 		return itemstack;
+	}
+
+	// getter/setter
+	
+	public T getTileEntity() {
+		return tileEntity;
 	}
 }

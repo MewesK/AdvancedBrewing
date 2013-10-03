@@ -14,11 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import advancedbrewing.tileentity.TileEntityInfuser;
 import advancedbrewing.tileentity.TileEntityMachine;
+import advancedbrewing.utils.Localization;
 
 public class GuiInfuser extends GuiMachine<TileEntityInfuser> {
 
 	public GuiInfuser(InventoryPlayer inventoryPlayer, TileEntityInfuser tileEntity) {
-		super(inventoryPlayer, tileEntity, new ContainerInfuser(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", "textures/gui/infuser.png"));
+		super(inventoryPlayer, tileEntity, new ContainerInfuser(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", "textures/gui/infuser.png"), Localization.get("gui.info.infuser.text"));
 	}
 
 	@Override

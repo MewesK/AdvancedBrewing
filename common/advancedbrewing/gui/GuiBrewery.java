@@ -14,11 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import advancedbrewing.tileentity.TileEntityBrewery;
 import advancedbrewing.tileentity.TileEntityMachine;
+import advancedbrewing.utils.Localization;
 
 public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 
 	public GuiBrewery(InventoryPlayer inventoryPlayer, TileEntityBrewery tileEntity) {
-		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", tileEntity.getType() > 0 ? "textures/gui/brewery_multi.png" : "textures/gui/brewery.png"));
+		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", tileEntity.getType() > 0 ? "textures/gui/brewery_multi.png" : "textures/gui/brewery.png"), Localization.get("gui.info.brewery.text"));
         this.ySize = 188;
 	}
 

@@ -14,11 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import advancedbrewing.tileentity.TileEntityMachine;
 import advancedbrewing.tileentity.TileEntityVaporizer;
+import advancedbrewing.utils.Localization;
 
 public class GuiVaporizer extends GuiMachine<TileEntityVaporizer> {
 
 	public GuiVaporizer(InventoryPlayer inventoryPlayer, TileEntityVaporizer tileEntity) {
-		super(inventoryPlayer, tileEntity, new ContainerVaporizer(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", "textures/gui/vaporizer.png"));
+		super(inventoryPlayer, tileEntity, new ContainerVaporizer(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", "textures/gui/vaporizer.png"), Localization.get("gui.info.vaporizer.text"));
 	}
 
 	@Override
