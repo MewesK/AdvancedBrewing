@@ -104,6 +104,10 @@ public class TileEntityInfuser extends TileEntityMachine {
 
 	@Override
 	protected boolean canWork() {
+		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
+			return false;
+		}
+		
 		// check fluidTank
 		if (this.fluidTanks[0].getFluid() != null && this.fluidTanks[0].getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME) {
 			// check itemStacks

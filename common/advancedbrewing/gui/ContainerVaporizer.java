@@ -27,10 +27,7 @@ public class ContainerVaporizer extends ContainerMachine<TileEntityVaporizer> {
 	}
 	
 	@Override
-	public void detectAndSendChanges() {
-		
-		// send updated inventory
-		
+	public void detectAndSendChanges() {		
 		super.detectAndSendChanges();
 
 		// send updated custom values
@@ -53,6 +50,8 @@ public class ContainerVaporizer extends ContainerMachine<TileEntityVaporizer> {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int value) {
+		super.updateProgressBar(id, value);
+		
 		// set properties
 		switch (id) {
 			case 5:

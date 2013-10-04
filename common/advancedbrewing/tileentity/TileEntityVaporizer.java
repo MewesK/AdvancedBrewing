@@ -79,7 +79,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		if (this.processContainerInput(0, 0, false)) {
 			usedEnergy += this.getPowerHandler().useEnergy(1, 1, true);
 		}
-
+		
 		// process vaporization
 
 		boolean working = this.workTime > 0;
@@ -117,6 +117,10 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected boolean canWork() {
+		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
+			return false;
+		}
+		
 		if (this.fluidTanks[0] != null && this.fluidTanks[0].getFluidAmount() >= this.radius * FluidContainerRegistry.BUCKET_VOLUME) {
 			PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
 			if (potionDefinitionBase == null) {

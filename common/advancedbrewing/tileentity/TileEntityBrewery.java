@@ -145,6 +145,10 @@ public class TileEntityBrewery extends TileEntityMachine {
 
 	@Override
 	protected boolean canWork() {
+		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
+			return false;
+		}
+		
 		// update type
 		this.checkIfProperlyFormed();
 
