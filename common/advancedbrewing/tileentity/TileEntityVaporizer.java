@@ -117,7 +117,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected boolean canWork() {
-		if (this.fluidTanks[0] != null && this.fluidTanks[0].getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME) {
+		if (this.fluidTanks[0] != null && this.fluidTanks[0].getFluidAmount() >= this.radius * FluidContainerRegistry.BUCKET_VOLUME) {
 			PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
 			if (potionDefinitionBase == null) {
 				return false;
@@ -140,39 +140,65 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected boolean work() {
-		if (this.canWork()) {
-			int radius = 1;
-			
-			int xOffset = 0;
-			int yOffset = 0;
-			int zOffset = 0;
+		if (this.canWork()) {	
+			int radius = this.radius - 1;
+			int x1 = this.xCoord;
+			int y1 = this.yCoord;
+			int z1 = this.zCoord;		
+			int x2 = this.xCoord + 1;
+			int y2 = this.yCoord + 1;
+			int z2 = this.zCoord + 1;
 
-			if (this.blockMetadata == BlockMachine.DIR_BOTTOM) {
-				yOffset--;
+			if (this.blockMetadata == BlockMachine.DIR_BOTTOM) {		
+				x1 -= radius;
+				y1 -= 1;
+				z1 -= radius;		
+				x2 += radius;
+				y2 -= 1;
+				z2 += radius;
 			}
 			else if (this.blockMetadata == BlockMachine.DIR_TOP) {
-				yOffset++;
+				x1 -= radius;
+				y1 += 1;
+				z1 -= radius;	
+				x2 += radius;
+				y2 += 1;
+				z2 += radius;
 			}
 			else if (this.blockMetadata == BlockMachine.DIR_SOUTH) {
-				zOffset--;
+				x1 -= radius;
+				y1 -= radius;
+				z1 -= 1;		
+				x2 += radius;
+				y2 += radius;
+				z2 -= 1;
 			}
 			else if (this.blockMetadata == BlockMachine.DIR_NORTH) {
-				zOffset++;
+				x1 -= radius;
+				y1 -= radius;
+				z1 += 1;		
+				x2 += radius;
+				y2 += radius;
+				z2 += 1;
 			}
 			else if (this.blockMetadata == BlockMachine.DIR_EAST) {
-				xOffset--;
+				x1 -= 1;
+				y1 -= radius;
+				z1 -= radius;
+				x2 -= 1;
+				y2 += radius;
+				z2 += radius;
 			}
 			else if (this.blockMetadata == BlockMachine.DIR_WEST) {
-				xOffset++;
+				x1 += 1;
+				y1 -= radius;
+				z1 -= radius;
+				x2 += 1;
+				y2 += radius;
+				z2 += radius;
 			}
 
-			AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(
-					this.xCoord + xOffset + radius - 1, 
-					this.yCoord + yOffset + radius - 1, 
-					this.zCoord + zOffset + radius - 1, 
-					this.xCoord + xOffset + 1 + radius - 1, 
-					this.yCoord + yOffset + 1 + radius - 1, 
-					this.zCoord + zOffset + 1 + radius - 1);
+			AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(x1, y1, z1, x2, y2, z2);
 			
 			List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
 			if (entities != null && entities.size() > 0) {
@@ -190,7 +216,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 				}
 				if (willHaveEffect) {
 					Utils.applyPotionEffects(potionDefinitionBase.getPotionID(), entities);
-					this.fluidTanks[0].drain((radius * 2 - 1) * FluidContainerRegistry.BUCKET_VOLUME, true);
+					this.fluidTanks[0].drain(this.radius * FluidContainerRegistry.BUCKET_VOLUME, true);
 					
 					return true;
 				}
