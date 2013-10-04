@@ -106,13 +106,10 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 	}
 	protected class ConfigLedger extends Ledger {
 		protected TileEntityMachine tileEntityMachine;
-		public GuiButtonIcon guiButtonRedstone;
 
 		public ConfigLedger(TileEntityMachine tileEntityMachine) {
 			this.tileEntityMachine = tileEntityMachine;
-			
-			this.guiButtonRedstone = new GuiButtonIcon(0, 22, 20, tileEntityMachine.isRedstoneActivated() ? 0 : 1, 1);
-			this.buttonList.add(this.guiButtonRedstone);
+			this.buttonList.add(new GuiButtonIcon(0, 22, 20, tileEntityMachine.isRedstoneActivated() ? 0 : 1, 1));
 
 			maxHeight = 28 + this.buttonList.size() * 20;
 			overlayColor = 0x00baa1;
@@ -129,7 +126,9 @@ public abstract class GuiMachine<T extends TileEntityMachine> extends GuiLedgere
 			}	
 			fontRenderer.drawStringWithShadow(Localization.get("gui.config.title"), x + 22, y + 8, headerColour);
 			
-			fontRenderer.drawString(Localization.get("gui.config.restone"), x + 22 + this.guiButtonRedstone.xPosition_ + 2, y + this.guiButtonRedstone.yPosition_ + 6, textColour);
+			for (GuiButtonIcon guiButtonIcon : this.buttonList) {
+				fontRenderer.drawString(Localization.get("gui.config."+guiButtonIcon.id), x + 22 + guiButtonIcon.xPosition_ + 2, y + guiButtonIcon.yPosition_ + 6, textColour);
+			}
 		}
 
 		@Override

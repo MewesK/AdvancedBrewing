@@ -22,6 +22,7 @@ import buildcraft.api.power.PowerHandler.Type;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
@@ -34,6 +35,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	public static int MAX_WORKTIME = 10;
 
 	// properties
+	private int radius = 1;
 
 	public TileEntityVaporizer() {
 		this.itemStacks = new ItemStack[1];
@@ -46,6 +48,22 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		this.getPowerHandler().configurePowerPerdition(0, 0);
 	}
 
+	// TileEntitySynchronized
+
+	@Override
+	protected void readCustomFromNBT(NBTTagCompound par1NBTTagCompound) {
+		super.readCustomFromNBT(par1NBTTagCompound);
+
+		this.radius = par1NBTTagCompound.getShort("Radius");
+	}
+
+	@Override
+	protected void writeCustomToNBT(NBTTagCompound par1NBTTagCompound) {
+		super.writeCustomToNBT(par1NBTTagCompound);
+
+		par1NBTTagCompound.setShort("Radius", (short) this.radius);
+	}
+	
 	// TileEntityPowered
 
 	@Override
@@ -230,5 +248,15 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
 		return new FluidTankInfo[] { this.fluidTanks[0].getInfo() };
+	}
+
+	// getter/setter
+	
+	public int getRadius() {
+		return radius;
+	}
+
+	public void setRadius(int radius) {
+		this.radius = radius;
 	}
 }

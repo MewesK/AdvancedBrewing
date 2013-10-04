@@ -34,7 +34,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	public static int MAX_WORKTIME = 0;
 
 	// properties
-	private boolean redstoneActivated;
+	protected boolean redstoneActivated = false;
 	protected int workTime;
 	protected ItemStack[] itemStacks;
 	protected FluidTank[] fluidTanks;

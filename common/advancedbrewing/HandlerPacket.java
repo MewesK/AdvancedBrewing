@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
 import advancedbrewing.gui.ContainerMachine;
+import advancedbrewing.gui.ContainerVaporizer;
 import advancedbrewing.tileentity.TileEntityMachine;
+import advancedbrewing.tileentity.TileEntityVaporizer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -28,6 +30,20 @@ public class HandlerPacket implements IPacketHandler {
 							TileEntityMachine tileEntityMachine = containerMachine.getTileEntity();
 							tileEntityMachine.setRedstoneActivated(redstoneActivated);
 							tileEntityMachine.onInventoryChanged();
+						}
+						catch (Exception exception) {
+							exception.printStackTrace();
+						}
+					}
+					break;
+				case 1:
+					if (player instanceof EntityPlayerMP && ((EntityPlayerMP) player).openContainer instanceof ContainerVaporizer) {
+						try {
+							int radius = data.readInt();
+							ContainerVaporizer containerVaporizer = (ContainerVaporizer) (((EntityPlayerMP) player).openContainer);
+							TileEntityVaporizer tileEntityVaporizer = containerVaporizer.getTileEntity();
+							tileEntityVaporizer.setRadius(radius);;
+							tileEntityVaporizer.onInventoryChanged();
 						}
 						catch (Exception exception) {
 							exception.printStackTrace();

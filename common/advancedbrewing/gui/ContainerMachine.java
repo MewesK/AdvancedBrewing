@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerMachine<T extends TileEntityMachine> extends Container {
 
-	private T tileEntity;
+	protected T tileEntity;
 	protected float lastStoredEnergy;
 	protected float lastRecentEnergyAverage;
 	protected float lastCurrentInput;
