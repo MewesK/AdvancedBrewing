@@ -9,31 +9,31 @@
 
 package advancedbrewing.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import advancedbrewing.tileentity.TileEntityVaporizer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerVaporizer extends ContainerMachine<TileEntityVaporizer> {
 
 	protected int lastRadius;
-	
+
 	public ContainerVaporizer(InventoryPlayer inventoryPlayer, TileEntityVaporizer tileEntity) {
 		super(inventoryPlayer, tileEntity, 0);
 
 		// input slot
 		this.addSlotToContainer(new SlotBreweryPotionContainer(tileEntity, 0, 54, 41));
 	}
-	
+
 	@Override
-	public void detectAndSendChanges() {		
+	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
 		// send updated custom values
 
 		int radius = this.tileEntity.getRadius();
-		
+
 		for (int i = 0; i < this.crafters.size(); ++i) {
 			ICrafting icrafting = (ICrafting) this.crafters.get(i);
 
@@ -43,7 +43,7 @@ public class ContainerVaporizer extends ContainerMachine<TileEntityVaporizer> {
 		}
 
 		// save updated values
-		
+
 		this.lastRadius = radius;
 	}
 
@@ -51,7 +51,7 @@ public class ContainerVaporizer extends ContainerMachine<TileEntityVaporizer> {
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int id, int value) {
 		super.updateProgressBar(id, value);
-		
+
 		// set properties
 		switch (id) {
 			case 5:

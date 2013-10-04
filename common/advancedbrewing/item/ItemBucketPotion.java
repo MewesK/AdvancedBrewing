@@ -48,37 +48,37 @@ public class ItemBucketPotion extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-    @SuppressWarnings("rawtypes")
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-    	Item.potion.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-    }
-    
-    @SideOnly(Side.CLIENT)
-    public int getColorFromDamage(int par1) {
-        return PotionHelper.func_77915_a(par1, false);
-    }
+	@SuppressWarnings("rawtypes")
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+		Item.potion.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+	}
 
-    @Override
 	@SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2) {
-        return par2 > 0 ? 16777215 : this.getColorFromDamage(par1ItemStack.getItemDamage());
-    }
-    
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getIconFromDamage(int par1) {
-        return iconItem;
-    }
+	public int getColorFromDamage(int par1) {
+		return PotionHelper.func_77915_a(par1, false);
+	}
 
 	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getIconFromDamageForRenderPass(int par1, int par2) {
-        return par2 == 0 ? this.iconOverlay : super.getIconFromDamageForRenderPass(par1, par2);
-    }
-    
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack par1ItemStack, int par2) {
+		return par2 > 0 ? 16777215 : this.getColorFromDamage(par1ItemStack.getItemDamage());
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIconFromDamage(int par1) {
+		return this.iconItem;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIconFromDamageForRenderPass(int par1, int par2) {
+		return par2 == 0 ? this.iconOverlay : super.getIconFromDamageForRenderPass(par1, par2);
+	}
+
 	@Override
 	public String getItemDisplayName(ItemStack itemstack) {
-		return Localization.get(getUnlocalizedName(itemstack));
+		return Localization.get(this.getUnlocalizedName(itemstack));
 	}
 
 	@Override

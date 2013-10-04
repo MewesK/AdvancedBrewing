@@ -36,7 +36,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 
 	public ContainerMachine(InventoryPlayer inventoryPlayer, T tileEntity, int inventoryOffsetY) {
 		int tankCount = tileEntity.getFluidTanks().length;
-		
+
 		this.tileEntity = tileEntity;
 		this.lastFluidIDs = new int[tankCount];
 		this.lastFluidAmounts = new int[tankCount];
@@ -56,9 +56,9 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 
 	@Override
 	public void detectAndSendChanges() {
-		
+
 		// send updated inventory
-		
+
 		super.detectAndSendChanges();
 
 		// send updated custom values
@@ -69,20 +69,20 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		boolean redstoneActivated = this.tileEntity.isRedstoneActivated();
 		int workTime = this.tileEntity.getWorkTime();
 		FluidTank[] fluidTanks = this.tileEntity.getFluidTanks();
-		
+
 		for (int i = 0; i < this.crafters.size(); ++i) {
 			ICrafting icrafting = (ICrafting) this.crafters.get(i);
 
 			if (this.lastStoredEnergy != storedEnergy) {
-				icrafting.sendProgressBarUpdate(this, 0, (int)(storedEnergy * 100));
+				icrafting.sendProgressBarUpdate(this, 0, (int) (storedEnergy * 100));
 			}
-			
+
 			if (this.lastRecentEnergyAverage != recentEnergyAverage) {
-				icrafting.sendProgressBarUpdate(this, 1, (int)(recentEnergyAverage * 100));
+				icrafting.sendProgressBarUpdate(this, 1, (int) (recentEnergyAverage * 100));
 			}
-			
+
 			if (this.lastCurrentInput != currentInput) {
-				icrafting.sendProgressBarUpdate(this, 2, (int)(currentInput * 100));
+				icrafting.sendProgressBarUpdate(this, 2, (int) (currentInput * 100));
 			}
 
 			if (this.lastRestoneActivated != redstoneActivated) {
@@ -92,7 +92,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 			if (this.lastWorkTime != workTime) {
 				icrafting.sendProgressBarUpdate(this, 4, workTime);
 			}
-			
+
 			for (int j = 0; j < this.lastFluidIDs.length; j++) {
 				FluidStack newFluid = fluidTanks[j].getFluid();
 				int newFluidID = newFluid != null ? newFluid.fluidID : -1;
@@ -108,7 +108,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 		}
 
 		// save updated values
-		
+
 		this.lastStoredEnergy = storedEnergy;
 		this.lastRecentEnergyAverage = recentEnergyAverage;
 		this.lastCurrentInput = currentInput;
@@ -143,9 +143,9 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 				this.tileEntity.setWorkTime(value);
 				return;
 		}
-		
+
 		FluidTank[] fluidTanks = this.tileEntity.getFluidTanks();
-		
+
 		// set fluid ids
 		if (id >= 100 && id < 200) {
 			if (fluidTanks[id - 100].getFluid() == null) {
@@ -158,7 +158,7 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 			}
 			return;
 		}
-		
+
 		// set fluid amounts
 		if (id >= 200 && id < 300) {
 			if (fluidTanks[id - 200].getFluid() != null) {
@@ -232,8 +232,8 @@ public class ContainerMachine<T extends TileEntityMachine> extends Container {
 	}
 
 	// getter/setter
-	
+
 	public T getTileEntity() {
-		return tileEntity;
+		return this.tileEntity;
 	}
 }

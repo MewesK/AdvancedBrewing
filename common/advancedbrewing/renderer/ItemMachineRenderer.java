@@ -20,7 +20,7 @@ public class ItemMachineRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		 return type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY;
+		return type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY;
 	}
 
 	@Override
@@ -30,6 +30,6 @@ public class ItemMachineRenderer implements IItemRenderer {
 
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
-		RENDERBLOCKS.renderBlockAsItem(Block.blocksList[itemStack.itemID], 3, 1.0F);
+		ItemMachineRenderer.RENDERBLOCKS.renderBlockAsItem(Block.blocksList[itemStack.itemID], 3, 1.0F);
 	}
 }

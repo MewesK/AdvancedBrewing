@@ -12,8 +12,6 @@ package advancedbrewing;
 import java.util.List;
 import java.util.Random;
 
-import advancedbrewing.entity.EntityArrowPotion;
-import advancedbrewing.utils.Utils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -27,6 +25,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
+import advancedbrewing.entity.EntityArrowPotion;
+import advancedbrewing.utils.Utils;
 
 public class HandlerBow {
 
@@ -85,7 +85,7 @@ public class HandlerBow {
 				}
 
 				event.bow.damageItem(1, event.entityPlayer);
-				event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (rand.nextFloat() * 0.4F + 1.2F) + charge * 0.5F);
+				event.entityPlayer.worldObj.playSoundAtEntity(event.entityPlayer, "random.bow", 1.0F, 1.0F / (HandlerBow.rand.nextFloat() * 0.4F + 1.2F) + charge * 0.5F);
 				event.entityPlayer.inventory.consumeInventoryItem(AdvancedBrewing.arrowPotionItem.itemID);
 
 				if (!event.entityPlayer.worldObj.isRemote) {
@@ -104,7 +104,7 @@ public class HandlerBow {
 		if (sourceOfDamage != null && sourceOfDamage instanceof EntityArrowPotion) {
 			int potionID = ((EntityArrowPotion) sourceOfDamage).getPotionID();
 			if (potionID >= 0) {
-				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "random.bowhit", 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
+				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "random.bowhit", 1.0F, 1.2F / (HandlerBow.rand.nextFloat() * 0.2F + 0.9F));
 				if (!ItemPotion.isSplash(potionID)) {
 					Utils.applyPotionEffects(potionID, event.entityLiving);
 				}

@@ -9,8 +9,6 @@
 
 package advancedbrewing.tileentity;
 
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.Type;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
@@ -22,6 +20,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.block.BlockInfuser;
 import advancedbrewing.utils.Utils;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.Type;
 
 public class TileEntityInfuser extends TileEntityMachine {
 	public static int MAX_WORKTIME = 100;
@@ -34,7 +34,7 @@ public class TileEntityInfuser extends TileEntityMachine {
 		this.itemStacks = new ItemStack[4];
 		this.fluidTanks = new FluidTank[1];
 
-		this.fluidTanks[0] = new FluidTank(MAX_FLUIDAMOUNT);
+		this.fluidTanks[0] = new FluidTank(TileEntityMachine.MAX_FLUIDAMOUNT);
 
 		this.setPowerHandler(new PowerHandler(this, Type.MACHINE));
 		this.getPowerHandler().configure(2, 100, 1, 5000);
@@ -84,7 +84,7 @@ public class TileEntityInfuser extends TileEntityMachine {
 			}
 		}
 		else if (this.canWork()) {
-			this.workTime = MAX_WORKTIME;
+			this.workTime = TileEntityInfuser.MAX_WORKTIME;
 			this.ingredientID = this.itemStacks[1].itemID;
 			this.additiveID = this.itemStacks[0] != null ? this.itemStacks[0].itemID : -1;
 		}
@@ -107,7 +107,7 @@ public class TileEntityInfuser extends TileEntityMachine {
 		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
 			return false;
 		}
-		
+
 		// check fluidTank
 		if (this.fluidTanks[0].getFluid() != null && this.fluidTanks[0].getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME) {
 			// check itemStacks
@@ -137,14 +137,15 @@ public class TileEntityInfuser extends TileEntityMachine {
 				int potionResult = Utils.getPotionIDResult(this.fluidTanks[0].getFluid().getFluid(), this.itemStacks[0], true);
 
 				this.fluidTanks[0].drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-    			decrStackSize(0, 1);
-    			decrStackSize(1, 1);
-    			
-    			if (this.itemStacks[2] == null) {
-        			this.itemStacks[2] = new ItemStack(Item.potion.itemID, 1, potionResult);
-    			} else {
-    				this.itemStacks[2].stackSize++;
-    			}
+				this.decrStackSize(0, 1);
+				this.decrStackSize(1, 1);
+
+				if (this.itemStacks[2] == null) {
+					this.itemStacks[2] = new ItemStack(Item.potion.itemID, 1, potionResult);
+				}
+				else {
+					this.itemStacks[2].stackSize++;
+				}
 			}
 			// TODO create potion arrows
 		}
@@ -217,7 +218,7 @@ public class TileEntityInfuser extends TileEntityMachine {
 	// getter / setter
 
 	public int getIngredientID() {
-		return ingredientID;
+		return this.ingredientID;
 	}
 
 	public void setIngredientID(int ingredientID) {
@@ -225,7 +226,7 @@ public class TileEntityInfuser extends TileEntityMachine {
 	}
 
 	public int getAdditiveID() {
-		return additiveID;
+		return this.additiveID;
 	}
 
 	public void setAdditiveID(int additiveID) {

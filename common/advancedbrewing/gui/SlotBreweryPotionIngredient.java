@@ -22,7 +22,7 @@ public class SlotBreweryPotionIngredient extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack) {
-		return isItemValidForSlot(par1ItemStack);
+		return SlotBreweryPotionIngredient.isItemValidForSlot(par1ItemStack);
 	}
 
 	@Override

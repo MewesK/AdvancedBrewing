@@ -9,6 +9,9 @@
 
 package advancedbrewing;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import advancedbrewing.gui.ContainerBrewery;
 import advancedbrewing.gui.ContainerInfuser;
 import advancedbrewing.gui.ContainerVaporizer;
@@ -19,9 +22,6 @@ import advancedbrewing.tileentity.TileEntityBrewery;
 import advancedbrewing.tileentity.TileEntityInfuser;
 import advancedbrewing.tileentity.TileEntityVaporizer;
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 public class HandlerGui implements IGuiHandler {
 

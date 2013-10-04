@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 /**
-* Simple mod localization class.
-*
-* @author Jimeo Wan
-* @license Public domain
-*/
+ * Simple mod localization class.
+ * 
+ * @author Jimeo Wan
+ * @license Public domain
+ */
 public class Localization {
 
 	private static class modInfo {
@@ -23,7 +23,7 @@ public class Localization {
 		}
 	}
 
-	private static String loadedLanguage = getCurrentLanguage();
+	private static String loadedLanguage = Localization.getCurrentLanguage();
 	private static Properties defaultMappings = new Properties();
 	private static Properties mappings = new Properties();
 	private static LinkedList<modInfo> mods = new LinkedList<modInfo>();
@@ -41,8 +41,8 @@ public class Localization {
 	 *            missing (e.g. "en_US")
 	 */
 	public static void addLocalization(String path, String defaultLanguage) {
-		mods.add(new modInfo(path, defaultLanguage));
-		load(path, defaultLanguage);
+		Localization.mods.add(new modInfo(path, defaultLanguage));
+		Localization.load(path, defaultLanguage);
 	}
 
 	/**
@@ -52,20 +52,20 @@ public class Localization {
 	 * @return
 	 */
 	public static synchronized String get(String key) {
-//		System.out.println("Localization: " + key);
-		if (getCurrentLanguage() == null) {
+		// System.out.println("Localization: " + key);
+		if (Localization.getCurrentLanguage() == null) {
 			return key;
 		}
-		if (!getCurrentLanguage().equals(loadedLanguage)) {
-			defaultMappings.clear();
-			mappings.clear();
-			for (modInfo mInfo : mods) {
-				load(mInfo.modName, mInfo.defaultLanguage);
+		if (!Localization.getCurrentLanguage().equals(Localization.loadedLanguage)) {
+			Localization.defaultMappings.clear();
+			Localization.mappings.clear();
+			for (modInfo mInfo : Localization.mods) {
+				Localization.load(mInfo.modName, mInfo.defaultLanguage);
 			}
-			loadedLanguage = getCurrentLanguage();
+			Localization.loadedLanguage = Localization.getCurrentLanguage();
 		}
 
-		return mappings.getProperty(key, defaultMappings.getProperty(key, key));
+		return Localization.mappings.getProperty(key, Localization.defaultMappings.getProperty(key, key));
 	}
 
 	private static void load(String path, String default_language) {
@@ -76,12 +76,12 @@ public class Localization {
 			// Load the default language mappings
 			langStream = Localization.class.getResourceAsStream(path + default_language + ".properties");
 			modMappings.load(langStream);
-			defaultMappings.putAll(modMappings);
+			Localization.defaultMappings.putAll(modMappings);
 			langStream.close();
 
 			// Try to load the current language mappings.
 			// If the file doesn't exist use the default mappings.
-			langStream = Localization.class.getResourceAsStream(path + getCurrentLanguage() + ".properties");
+			langStream = Localization.class.getResourceAsStream(path + Localization.getCurrentLanguage() + ".properties");
 			if (langStream != null) {
 				modMappings.clear();
 				modMappings.load(langStream);
@@ -97,11 +97,11 @@ public class Localization {
 					Properties parentModMappings = new Properties();
 
 					parentModMappings.load(langStream);
-					mappings.putAll(parentModMappings);
+					Localization.mappings.putAll(parentModMappings);
 				}
 			}
 
-			mappings.putAll(modMappings);
+			Localization.mappings.putAll(modMappings);
 
 		}
 		catch (Exception e) {

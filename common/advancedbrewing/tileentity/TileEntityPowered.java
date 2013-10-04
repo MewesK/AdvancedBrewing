@@ -9,13 +9,13 @@
 
 package advancedbrewing.tileentity;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 
 public abstract class TileEntityPowered extends TileEntitySynchronized implements IPowerReceptor {
 
@@ -42,9 +42,9 @@ public abstract class TileEntityPowered extends TileEntitySynchronized implement
 	protected void writeCustomToNBT(NBTTagCompound par1NBTTagCompound) {
 		this.powerHandler.writeToNBT(par1NBTTagCompound);
 	}
-	
+
 	// IPowerReceptor
-	
+
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side) {
 		return this.powerHandler.getPowerReceiver();
@@ -60,8 +60,8 @@ public abstract class TileEntityPowered extends TileEntitySynchronized implement
 
 	public float calculateRecentEnergyAverage() {
 		float recentEnergyAverage = 0;
-		for (int i = 0; i < recentEnergy.length; i++) {
-			recentEnergyAverage += recentEnergy[i] / (recentEnergy.length - 1);
+		for (int i = 0; i < this.recentEnergy.length; i++) {
+			recentEnergyAverage += this.recentEnergy[i] / (this.recentEnergy.length - 1);
 		}
 		return recentEnergyAverage;
 	}
@@ -71,18 +71,18 @@ public abstract class TileEntityPowered extends TileEntitySynchronized implement
 		if (this.worldObj.isRemote) {
 			return;
 		}
-		
+
 		this.tick++;
-		this.tick = tick % this.recentEnergy.length;
+		this.tick = this.tick % this.recentEnergy.length;
 		this.recentEnergy[this.tick] = 0.0f;
-		
+
 		this.powerHandler.update();
 	}
 
 	// getter / setter
 
 	public PowerHandler getPowerHandler() {
-		return powerHandler;
+		return this.powerHandler;
 	}
 
 	public void setPowerHandler(PowerHandler powerHandler) {
@@ -90,23 +90,23 @@ public abstract class TileEntityPowered extends TileEntitySynchronized implement
 	}
 
 	public float getRecentEnergyAverage() {
-		return recentEnergyAverage;
+		return this.recentEnergyAverage;
 	}
 
 	public void setRecentEnergyAverage(float recentEnergyAverage) {
 		this.recentEnergyAverage = recentEnergyAverage;
 	}
-	
+
 	public float getCurrentEnergy() {
 		return this.recentEnergy[this.tick];
 	}
-	
+
 	public void setCurrentEnergy(float currentEnergy) {
 		this.recentEnergy[this.tick] = currentEnergy;
 	}
 
 	public float getCurrentInput() {
-		return currentInput;
+		return this.currentInput;
 	}
 
 	public void setCurrentInput(float currentInput) {

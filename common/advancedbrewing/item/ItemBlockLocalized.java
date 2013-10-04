@@ -9,9 +9,9 @@
 
 package advancedbrewing.item;
 
-import advancedbrewing.utils.Localization;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import advancedbrewing.utils.Localization;
 
 public class ItemBlockLocalized extends ItemBlock {
 
@@ -21,6 +21,6 @@ public class ItemBlockLocalized extends ItemBlock {
 
 	@Override
 	public String getItemDisplayName(ItemStack itemstack) {
-		return Localization.get(getUnlocalizedName(itemstack));
+		return Localization.get(this.getUnlocalizedName(itemstack));
 	}
 }

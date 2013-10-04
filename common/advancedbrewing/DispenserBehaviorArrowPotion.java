@@ -9,7 +9,6 @@
 
 package advancedbrewing;
 
-import advancedbrewing.entity.EntityArrowPotion;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IBlockSource;
@@ -19,6 +18,7 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import advancedbrewing.entity.EntityArrowPotion;
 
 public class DispenserBehaviorArrowPotion extends BehaviorProjectileDispense {
 	@Override
@@ -28,7 +28,7 @@ public class DispenserBehaviorArrowPotion extends BehaviorProjectileDispense {
 		EnumFacing enumfacing = BlockDispenser.getFacing(par1IBlockSource.getBlockMetadata());
 		IProjectile iprojectile = this.getProjectileEntity(world, iposition);
 		((EntityArrowPotion) iprojectile).setPotionID(par2ItemStack.getItemDamage());
-		iprojectile.setThrowableHeading((double) enumfacing.getFrontOffsetX(), (double) ((float) enumfacing.getFrontOffsetY() + 0.1F), (double) enumfacing.getFrontOffsetZ(), this.func_82500_b(), this.func_82498_a());
+		iprojectile.setThrowableHeading(enumfacing.getFrontOffsetX(), enumfacing.getFrontOffsetY() + 0.1F, enumfacing.getFrontOffsetZ(), this.func_82500_b(), this.func_82498_a());
 		world.spawnEntityInWorld((Entity) iprojectile);
 		par2ItemStack.splitStack(1);
 		return par2ItemStack;

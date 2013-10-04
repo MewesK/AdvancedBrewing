@@ -30,13 +30,13 @@ public class PotionDefinition {
 		this.name = name;
 		this.potionIDs = potionIDs;
 	}
-	
+
 	public int getColor() {
-		return PotionHelper.func_77915_a(getPotionID(), false);
+		return PotionHelper.func_77915_a(this.getPotionID(), false);
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -44,11 +44,11 @@ public class PotionDefinition {
 	}
 
 	public int getPotionID() {
-		return potionIDs != null ? potionIDs[0] : -1;
+		return this.potionIDs != null ? this.potionIDs[0] : -1;
 	}
 
 	public int[] getPotionIDs() {
-		return potionIDs;
+		return this.potionIDs;
 	}
 
 	public void setPotionIds(int[] potionIDs) {
@@ -56,7 +56,7 @@ public class PotionDefinition {
 	}
 
 	public Block getBlock() {
-		return block;
+		return this.block;
 	}
 
 	public void setBlock(Block block) {

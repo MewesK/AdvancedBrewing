@@ -10,13 +10,14 @@
 package advancedbrewing.entity;
 
 import java.lang.reflect.Field;
-import advancedbrewing.AdvancedBrewing;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import advancedbrewing.AdvancedBrewing;
 
 public class EntityArrowPotion extends EntityArrow {
 
@@ -31,7 +32,7 @@ public class EntityArrowPotion extends EntityArrow {
 		super(par1World, par2, par4, par6);
 		this.setDamage(0);
 	}
-	
+
 	public EntityArrowPotion(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
 		super(par1World, par2EntityLivingBase, par3);
 		this.setDamage(0);
@@ -48,21 +49,22 @@ public class EntityArrowPotion extends EntityArrow {
 			Field f = this.getClass().getSuperclass().getDeclaredField("inGround");
 			f.setAccessible(true);
 			boolean inGround = f.getBoolean(this);
-			
-    		if (!this.worldObj.isRemote && inGround && this.arrowShake <= 0) {
-    			boolean flag = this.canBePickedUp == 1;
-        		if (this.canBePickedUp == 1) {
-        			if (!par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(AdvancedBrewing.arrowPotionItem, 1, this.potionID))) {
-        				flag = false;
-        			}
-    			}
-       			if (flag) {
-    				this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-    				par1EntityPlayer.onItemPickup(this, 1);
-    				this.setDead();
-    			}
-    		}
-		} catch(Exception e) {
+
+			if (!this.worldObj.isRemote && inGround && this.arrowShake <= 0) {
+				boolean flag = this.canBePickedUp == 1;
+				if (this.canBePickedUp == 1) {
+					if (!par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(AdvancedBrewing.arrowPotionItem, 1, this.potionID))) {
+						flag = false;
+					}
+				}
+				if (flag) {
+					this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					par1EntityPlayer.onItemPickup(this, 1);
+					this.setDead();
+				}
+			}
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -84,7 +86,7 @@ public class EntityArrowPotion extends EntityArrow {
 	// getter / setter
 
 	public int getPotionID() {
-		return potionID;
+		return this.potionID;
 	}
 
 	public void setPotionID(int potionID) {

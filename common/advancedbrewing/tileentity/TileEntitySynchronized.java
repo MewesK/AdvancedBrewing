@@ -37,12 +37,12 @@ public abstract class TileEntitySynchronized extends TileEntity {
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeCustomToNBT(tag);
-		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, tag);
+		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, tag);
 	}
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
 		this.readCustomFromNBT(packet.data);
-		this.worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		this.worldObj.markBlockForRenderUpdate(this.xCoord, this.yCoord, this.zCoord);
 	}
 }

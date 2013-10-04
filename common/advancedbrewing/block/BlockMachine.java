@@ -9,11 +9,6 @@
 
 package advancedbrewing.block;
 
-import advancedbrewing.AdvancedBrewing;
-import advancedbrewing.tileentity.TileEntityMachine;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -29,6 +24,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import advancedbrewing.AdvancedBrewing;
+import advancedbrewing.tileentity.TileEntityMachine;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockMachine<T extends TileEntityMachine> extends BlockContainer {
 
@@ -38,7 +37,11 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 	public static final int DIR_NORTH = 0x03;
 	public static final int DIR_EAST = 0x04;
 	public static final int DIR_WEST = 0x05;
-	public static final int[] DIRS = new int[] { DIR_SOUTH, DIR_WEST, DIR_NORTH, DIR_EAST };
+	public static final int[] DIRS = new int[] {
+			BlockMachine.DIR_SOUTH,
+			BlockMachine.DIR_WEST,
+			BlockMachine.DIR_NORTH,
+			BlockMachine.DIR_EAST };
 
 	protected final Random rand = new Random();
 	protected final boolean isActive;
@@ -96,22 +99,22 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 			int i1 = world.getBlockId(par2, par3, par4 + 1);
 			int j1 = world.getBlockId(par2 - 1, par3, par4);
 			int k1 = world.getBlockId(par2 + 1, par3, par4);
-			byte dir = DIR_NORTH;
+			byte dir = BlockMachine.DIR_NORTH;
 
 			if (Block.opaqueCubeLookup[l] && !Block.opaqueCubeLookup[i1]) {
-				dir = DIR_NORTH;
+				dir = BlockMachine.DIR_NORTH;
 			}
 
 			if (Block.opaqueCubeLookup[i1] && !Block.opaqueCubeLookup[l]) {
-				dir = DIR_SOUTH;
+				dir = BlockMachine.DIR_SOUTH;
 			}
 
 			if (Block.opaqueCubeLookup[j1] && !Block.opaqueCubeLookup[k1]) {
-				dir = DIR_WEST;
+				dir = BlockMachine.DIR_WEST;
 			}
 
 			if (Block.opaqueCubeLookup[k1] && !Block.opaqueCubeLookup[j1]) {
-				dir = DIR_EAST;
+				dir = BlockMachine.DIR_EAST;
 			}
 
 			world.setBlockMetadataWithNotify(par2, par3, par4, dir, 2);
@@ -130,14 +133,14 @@ public abstract class BlockMachine<T extends TileEntityMachine> extends BlockCon
 
 	@Override
 	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
-		int dir = DIRS[MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3];
+		int dir = BlockMachine.DIRS[MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3];
 		par1World.setBlockMetadataWithNotify(par2, par3, par4, dir, 2);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6) {
-		if (!keepInventory) {
+		if (!BlockMachine.keepInventory) {
 			T tileEntity = (T) world.getBlockTileEntity(par2, par3, par4);
 
 			if (tileEntity != null) {

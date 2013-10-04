@@ -9,11 +9,11 @@
 
 package advancedbrewing.gui;
 
-import advancedbrewing.AdvancedBrewing;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import advancedbrewing.AdvancedBrewing;
 
 public class SlotBreweryBasePotionContainer extends Slot {
 	public SlotBreweryBasePotionContainer(IInventory par2IInventory, int par3, int par4, int par5) {
@@ -22,7 +22,7 @@ public class SlotBreweryBasePotionContainer extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack) {
-		return isItemValidForSlot(par1ItemStack);
+		return SlotBreweryBasePotionContainer.isItemValidForSlot(par1ItemStack);
 	}
 
 	@Override

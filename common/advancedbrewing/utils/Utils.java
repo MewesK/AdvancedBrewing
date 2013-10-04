@@ -28,15 +28,16 @@ public class Utils {
 	public static PotionDefinition getPotionDefinitionByPotionID(int potionID) {
 		return AdvancedBrewing.potionDefinitionMappings.get(potionID);
 	}
+
 	public static PotionDefinition getPotionDefinitionByPotionID(int potionID, boolean allowSplash) {
-		PotionDefinition potionDefinition = getPotionDefinitionByPotionID(potionID);
+		PotionDefinition potionDefinition = Utils.getPotionDefinitionByPotionID(potionID);
 		return potionDefinition == null ? AdvancedBrewing.potionDefinitionMappingsSplash.get(potionID) : potionDefinition;
 	}
 
 	public static PotionDefinition getPotionDefinitionByBlock(Block block) {
-		return getPotionDefinitionByBlock(block.blockID);
+		return Utils.getPotionDefinitionByBlock(block.blockID);
 	}
-	
+
 	public static PotionDefinition getPotionDefinitionByBlock(int blockID) {
 		if (blockID < 0 || blockID >= Block.blocksList.length) {
 			return null;
@@ -46,7 +47,7 @@ public class Utils {
 			if (block != null && block.blockID == blockID) {
 				return potionDefinition;
 			}
-			
+
 		}
 		return null;
 	}
@@ -69,17 +70,17 @@ public class Utils {
 		}
 		return FluidRegistry.getFluid(potionDefinition.getName());
 	}
-	
+
 	public static ItemStack unreversePotionItemStack(ItemStack itemStack) {
 		if (itemStack != null && itemStack.itemID == Item.potion.itemID) {
-    		PotionDefinition potionDefinition = getPotionDefinitionByPotionID(itemStack.getItemDamage());
-    		if (potionDefinition != null) {
-    			itemStack.setItemDamage(potionDefinition.getPotionID());
-    		}
+			PotionDefinition potionDefinition = Utils.getPotionDefinitionByPotionID(itemStack.getItemDamage());
+			if (potionDefinition != null) {
+				itemStack.setItemDamage(potionDefinition.getPotionID());
+			}
 		}
 		return itemStack;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static int getPotionIDResult(Fluid fluid, ItemStack itemStack, boolean allowSplash) {
 		PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(fluid);
@@ -92,7 +93,7 @@ public class Utils {
 			return -1;
 		}
 
-		int potionResult =  itemStack == null ? potionBase : (Item.itemsList[itemStack.itemID].isPotionIngredient() ? PotionHelper.applyIngredient(potionBase, Item.itemsList[itemStack.itemID].getPotionEffect()) : potionBase);
+		int potionResult = itemStack == null ? potionBase : (Item.itemsList[itemStack.itemID].isPotionIngredient() ? PotionHelper.applyIngredient(potionBase, Item.itemsList[itemStack.itemID].getPotionEffect()) : potionBase);
 		if (!allowSplash && ItemPotion.isSplash(potionResult)) {
 			return -1;
 		}
@@ -103,10 +104,10 @@ public class Utils {
 		if ((potionBase <= 0 || potionEffectsBase != potionEffectsResult) && (potionEffectsBase == null || !potionEffectsBase.equals(potionEffectsResult) && potionEffectsResult != null)) {
 			return potionResult;
 		}
-		
+
 		return -1;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void applyPotionEffects(int potionID, EntityLivingBase entityLivingBase) {
 		ItemStack itemStackInner = new ItemStack(Item.potion, 1, potionID);
@@ -117,17 +118,17 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	public static void applyPotionEffects(int potionID, List<EntityLivingBase> entityLivingBases) {
 		for (EntityLivingBase entityLivingBase : entityLivingBases) {
-			applyPotionEffects(potionID, entityLivingBase);
+			Utils.applyPotionEffects(potionID, entityLivingBase);
 		}
 	}
-	
+
 	public static int getItemIDByItemStack(ItemStack itemStack) {
 		return itemStack == null ? -1 : itemStack.itemID;
 	}
-	
+
 	public static int getSlotIndexByItemID(InventoryPlayer inventory, int itemID) {
 		int slotIndex = -1;
 		for (int i = 0; i < inventory.mainInventory.length; ++i) {

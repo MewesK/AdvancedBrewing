@@ -24,7 +24,7 @@ public class TriggerParameter implements ITriggerParameter {
 	 */
 	@Override
 	public ItemStack getItemStack() {
-		return stack;
+		return this.stack;
 	}
 
 	/*
@@ -51,9 +51,9 @@ public class TriggerParameter implements ITriggerParameter {
 	 */
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
-		if (stack != null) {
-			compound.setInteger("itemID", stack.itemID);
-			compound.setInteger("itemDMG", stack.getItemDamage());
+		if (this.stack != null) {
+			compound.setInteger("itemID", this.stack.itemID);
+			compound.setInteger("itemDMG", this.stack.getItemDamage());
 		}
 	}
 
@@ -69,7 +69,7 @@ public class TriggerParameter implements ITriggerParameter {
 		int itemID = compound.getInteger("itemID");
 
 		if (itemID != 0) {
-			stack = new ItemStack(itemID, 1, compound.getInteger("itemDMG"));
+			this.stack = new ItemStack(itemID, 1, compound.getInteger("itemDMG"));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class TriggerParameter implements ITriggerParameter {
 	 */
 	@Override
 	public ItemStack getItem() {
-		return stack;
+		return this.stack;
 	}
 
 }

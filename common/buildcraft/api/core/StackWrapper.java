@@ -25,26 +25,32 @@ public class StackWrapper {
 	@Override
 	public int hashCode() {
 		int hash = 5;
-		hash = 67 * hash + stack.itemID;
-		hash = 67 * hash + stack.getItemDamage();
-		if (stack.stackTagCompound != null)
-			hash = 67 * hash + stack.stackTagCompound.hashCode();
+		hash = 67 * hash + this.stack.itemID;
+		hash = 67 * hash + this.stack.getItemDamage();
+		if (this.stack.stackTagCompound != null) {
+			hash = 67 * hash + this.stack.stackTagCompound.hashCode();
+		}
 		return hash;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 		final StackWrapper other = (StackWrapper) obj;
-		if (stack.itemID != other.stack.itemID)
+		if (this.stack.itemID != other.stack.itemID) {
 			return false;
-		if (stack.getHasSubtypes() && stack.getItemDamage() != other.stack.getItemDamage())
+		}
+		if (this.stack.getHasSubtypes() && this.stack.getItemDamage() != other.stack.getItemDamage()) {
 			return false;
-		if (stack.stackTagCompound != null && !stack.stackTagCompound.equals(other.stack.stackTagCompound))
+		}
+		if (this.stack.stackTagCompound != null && !this.stack.stackTagCompound.equals(other.stack.stackTagCompound)) {
 			return false;
+		}
 		return true;
 	}
 }

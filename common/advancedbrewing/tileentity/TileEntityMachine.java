@@ -9,7 +9,6 @@
 
 package advancedbrewing.tileentity;
 
-import buildcraft.api.power.PowerHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
@@ -28,6 +27,7 @@ import advancedbrewing.AdvancedBrewing;
 import advancedbrewing.PotionDefinition;
 import advancedbrewing.item.ItemAutoPotion;
 import advancedbrewing.utils.Utils;
+import buildcraft.api.power.PowerHandler;
 
 public abstract class TileEntityMachine extends TileEntityPowered implements ISidedInventory, IFluidHandler {
 	public static int MAX_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 10;
@@ -47,7 +47,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 
 		this.redstoneActivated = par1NBTTagCompound.getBoolean("RedstoneActivated");
 		this.workTime = par1NBTTagCompound.getShort("WorkTime");
-		
+
 		NBTTagList nbttaglist1 = par1NBTTagCompound.getTagList("Slots");
 		this.itemStacks = new ItemStack[this.getSizeInventory()];
 		for (int i = 0; i < nbttaglist1.tagCount(); ++i) {
@@ -74,7 +74,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 
 		par1NBTTagCompound.setBoolean("RedstoneActivated", this.redstoneActivated);
 		par1NBTTagCompound.setShort("WorkTime", (short) this.workTime);
-		
+
 		NBTTagList nbttaglist1 = new NBTTagList();
 		for (int i = 0; i < this.itemStacks.length; ++i) {
 			if (this.itemStacks[i] != null) {
@@ -96,12 +96,11 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 		par1NBTTagCompound.setTag("Tanks", nbttaglist2);
 	}
 
-	
 	// TileEntityPowered
 
 	@Override
 	public abstract void doWork(PowerHandler workProvider);
-	
+
 	// ISidedInventory
 
 	@Override
@@ -235,27 +234,27 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	protected abstract boolean canWork();
 
 	protected abstract boolean work();
-	
+
 	// helper
-	
+
 	protected boolean processContainerInput(int itemStackIndex, int fluidTankIndex, boolean allowBaseFluids) {
 		if (itemStackIndex < 0 || itemStackIndex >= this.itemStacks.length || fluidTankIndex < 0 || fluidTankIndex >= this.fluidTanks.length) {
 			return false;
 		}
 		ItemStack itemStack = this.itemStacks[itemStackIndex];
 		FluidTank fluidTank = this.fluidTanks[fluidTankIndex];
-		if (itemStack != null && itemStack.stackSize == 1 && fluidTank.getFluidAmount() + FluidContainerRegistry.BUCKET_VOLUME <= MAX_FLUIDAMOUNT) {
+		if (itemStack != null && itemStack.stackSize == 1 && fluidTank.getFluidAmount() + FluidContainerRegistry.BUCKET_VOLUME <= TileEntityMachine.MAX_FLUIDAMOUNT) {
 			itemStack = Utils.unreversePotionItemStack(itemStack);
 			FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
 			if (fluidStack != null && (fluidTank.getFluid() == null || fluidTank.getFluid().fluidID == fluidStack.fluidID)) {
 				this.fluidTanks[fluidTankIndex].fill(fluidStack, true);
-				this.itemStacks[itemStackIndex] = FluidContainerRegistry.isBucket(itemStack) ?  new ItemStack(Item.bucketEmpty) : new ItemStack(Item.glassBottle);
+				this.itemStacks[itemStackIndex] = FluidContainerRegistry.isBucket(itemStack) ? new ItemStack(Item.bucketEmpty) : new ItemStack(Item.glassBottle);
 				return true;
 			}
-		}		
+		}
 		return false;
 	}
-	
+
 	protected boolean processContainerOutput(int itemStackInputIndex, int itemStackOutputIndex, int fluidTankIndex) {
 		if (itemStackInputIndex < 0 || itemStackInputIndex >= this.itemStacks.length || itemStackOutputIndex < 0 || itemStackOutputIndex >= this.itemStacks.length || fluidTankIndex < 0 || fluidTankIndex >= this.fluidTanks.length) {
 			return false;
@@ -276,27 +275,29 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 					if (potionDefinition != null) {
 						boolean success = false;
 						if (itemStackInputIndex == itemStackOutputIndex) {
-    						itemStack.setItemDamage(potionDefinition.getPotionID());
-    						success = true;
-    					} else {
-    						if (this.itemStacks[itemStackOutputIndex] == null || (this.itemStacks[itemStackOutputIndex].itemID == itemStack.itemID && this.itemStacks[2].getItemDamage() == potionDefinition.getPotionID() && this.itemStacks[itemStackOutputIndex].stackSize + 1 <= this.itemStacks[itemStackOutputIndex].getMaxStackSize())) {
-    							this.itemStacks[itemStackInputIndex] = null;
-    			    			if (this.itemStacks[itemStackOutputIndex] == null) {
-    			        			this.itemStacks[itemStackOutputIndex] = new ItemStack(Item.potion.itemID, 1, potionDefinition.getPotionID());
-    			    			} else {
-    			    				this.itemStacks[itemStackOutputIndex].stackSize++;
-    			    			}
-    			    			success = true;
-    						} 
-    					}
-					
-    					if (success) {
-        					tag.setString("FluidName", fluidTank.getFluid().getFluid().getName());
-        					tag.setInteger("FluidAmount", fluidAmount + FluidContainerRegistry.BUCKET_VOLUME);
-        					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-        					itemStack.setTagCompound(tag);		
-        					return true;
-    					}
+							itemStack.setItemDamage(potionDefinition.getPotionID());
+							success = true;
+						}
+						else {
+							if (this.itemStacks[itemStackOutputIndex] == null || (this.itemStacks[itemStackOutputIndex].itemID == itemStack.itemID && this.itemStacks[2].getItemDamage() == potionDefinition.getPotionID() && this.itemStacks[itemStackOutputIndex].stackSize + 1 <= this.itemStacks[itemStackOutputIndex].getMaxStackSize())) {
+								this.itemStacks[itemStackInputIndex] = null;
+								if (this.itemStacks[itemStackOutputIndex] == null) {
+									this.itemStacks[itemStackOutputIndex] = new ItemStack(Item.potion.itemID, 1, potionDefinition.getPotionID());
+								}
+								else {
+									this.itemStacks[itemStackOutputIndex].stackSize++;
+								}
+								success = true;
+							}
+						}
+
+						if (success) {
+							tag.setString("FluidName", fluidTank.getFluid().getFluid().getName());
+							tag.setInteger("FluidAmount", fluidAmount + FluidContainerRegistry.BUCKET_VOLUME);
+							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+							itemStack.setTagCompound(tag);
+							return true;
+						}
 					}
 				}
 			}
@@ -307,21 +308,23 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 					if (itemStackInputIndex == itemStackOutputIndex) {
 						this.itemStacks[itemStackInputIndex] = itemStackFilled;
 						success = true;
-					} else {
-						if (this.itemStacks[itemStackOutputIndex] == null || (this.itemStacks[itemStackOutputIndex].itemID == itemStackFilled.itemID && this.itemStacks[2].getItemDamage() == itemStackFilled.getItemDamage() && this.itemStacks[itemStackOutputIndex].stackSize + itemStackFilled.stackSize <= this.itemStacks[itemStackOutputIndex].getMaxStackSize())) {
-    						this.itemStacks[itemStackInputIndex] = null;
-    		    			if (this.itemStacks[itemStackOutputIndex] == null) {
-    		        			this.itemStacks[itemStackOutputIndex] = new ItemStack(Item.potion.itemID, 1, itemStackFilled.getItemDamage());
-    		    			} else {
-    		    				this.itemStacks[itemStackOutputIndex].stackSize += itemStackFilled.stackSize;
-    		    			}
-    		    			success = true;
-    					}
 					}
-					
+					else {
+						if (this.itemStacks[itemStackOutputIndex] == null || (this.itemStacks[itemStackOutputIndex].itemID == itemStackFilled.itemID && this.itemStacks[2].getItemDamage() == itemStackFilled.getItemDamage() && this.itemStacks[itemStackOutputIndex].stackSize + itemStackFilled.stackSize <= this.itemStacks[itemStackOutputIndex].getMaxStackSize())) {
+							this.itemStacks[itemStackInputIndex] = null;
+							if (this.itemStacks[itemStackOutputIndex] == null) {
+								this.itemStacks[itemStackOutputIndex] = new ItemStack(Item.potion.itemID, 1, itemStackFilled.getItemDamage());
+							}
+							else {
+								this.itemStacks[itemStackOutputIndex].stackSize += itemStackFilled.stackSize;
+							}
+							success = true;
+						}
+					}
+
 					if (success) {
 						this.fluidTanks[fluidTankIndex].drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-    					return true;
+						return true;
 					}
 				}
 			}
@@ -332,18 +335,18 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	// getter / setter
 
 	public boolean isRedstoneActivated() {
-		return redstoneActivated;
+		return this.redstoneActivated;
 	}
 
 	public void setRedstoneActivated(boolean redstoneActivated) {
 		this.redstoneActivated = redstoneActivated;
-		
+
 		// synchronize with client
 		this.onInventoryChanged();
 	}
 
 	public int getWorkTime() {
-		return workTime;
+		return this.workTime;
 	}
 
 	public void setWorkTime(int workTime) {
@@ -351,7 +354,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	}
 
 	public ItemStack[] getItemStacks() {
-		return itemStacks;
+		return this.itemStacks;
 	}
 
 	public void setItemStacks(ItemStack[] itemStacks) {
@@ -359,7 +362,7 @@ public abstract class TileEntityMachine extends TileEntityPowered implements ISi
 	}
 
 	public FluidTank[] getFluidTanks() {
-		return fluidTanks;
+		return this.fluidTanks;
 	}
 
 	public void setFluidTanks(FluidTank[] fluidTanks) {

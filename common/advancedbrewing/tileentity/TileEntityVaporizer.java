@@ -11,14 +11,6 @@ package advancedbrewing.tileentity;
 
 import java.util.List;
 
-import advancedbrewing.AdvancedBrewing;
-import advancedbrewing.PotionDefinition;
-import advancedbrewing.block.BlockMachine;
-import advancedbrewing.block.BlockVaporizer;
-import advancedbrewing.gui.SlotBreweryPotionContainer;
-import advancedbrewing.utils.Utils;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.Type;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,6 +22,14 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import advancedbrewing.AdvancedBrewing;
+import advancedbrewing.PotionDefinition;
+import advancedbrewing.block.BlockMachine;
+import advancedbrewing.block.BlockVaporizer;
+import advancedbrewing.gui.SlotBreweryPotionContainer;
+import advancedbrewing.utils.Utils;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.Type;
 
 public class TileEntityVaporizer extends TileEntityMachine {
 	public static int MAX_WORKTIME = 10;
@@ -41,7 +41,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		this.itemStacks = new ItemStack[1];
 		this.fluidTanks = new FluidTank[1];
 
-		this.fluidTanks[0] = new FluidTank(MAX_FLUIDAMOUNT);
+		this.fluidTanks[0] = new FluidTank(TileEntityMachine.MAX_FLUIDAMOUNT);
 
 		this.setPowerHandler(new PowerHandler(this, Type.MACHINE));
 		this.getPowerHandler().configure(1, 100, 1, 1000);
@@ -63,7 +63,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 
 		par1NBTTagCompound.setShort("Radius", (short) this.radius);
 	}
-	
+
 	// TileEntityPowered
 
 	@Override
@@ -71,7 +71,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		if (this.worldObj.isRemote) {
 			return;
 		}
-		
+
 		float usedEnergy = 0;
 
 		// process bucket slot (input)
@@ -79,7 +79,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		if (this.processContainerInput(0, 0, false)) {
 			usedEnergy += this.getPowerHandler().useEnergy(1, 1, true);
 		}
-		
+
 		// process vaporization
 
 		boolean working = this.workTime > 0;
@@ -98,7 +98,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 			}
 		}
 		else if (this.canWork()) {
-			this.workTime = MAX_WORKTIME;
+			this.workTime = TileEntityVaporizer.MAX_WORKTIME;
 		}
 
 		this.setCurrentEnergy((int) usedEnergy);
@@ -120,7 +120,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
 			return false;
 		}
-		
+
 		if (this.fluidTanks[0] != null && this.fluidTanks[0].getFluidAmount() >= this.radius * FluidContainerRegistry.BUCKET_VOLUME) {
 			PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
 			if (potionDefinitionBase == null) {
@@ -144,19 +144,19 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	protected boolean work() {
-		if (this.canWork()) {	
+		if (this.canWork()) {
 			int radius = this.radius - 1;
 			int x1 = this.xCoord;
 			int y1 = this.yCoord;
-			int z1 = this.zCoord;		
+			int z1 = this.zCoord;
 			int x2 = this.xCoord + 1;
 			int y2 = this.yCoord + 1;
 			int z2 = this.zCoord + 1;
 
-			if (this.blockMetadata == BlockMachine.DIR_BOTTOM) {		
+			if (this.blockMetadata == BlockMachine.DIR_BOTTOM) {
 				x1 -= radius;
 				y1 -= 1;
-				z1 -= radius;		
+				z1 -= radius;
 				x2 += radius;
 				y2 -= 1;
 				z2 += radius;
@@ -164,7 +164,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 			else if (this.blockMetadata == BlockMachine.DIR_TOP) {
 				x1 -= radius;
 				y1 += 1;
-				z1 -= radius;	
+				z1 -= radius;
 				x2 += radius;
 				y2 += 1;
 				z2 += radius;
@@ -172,7 +172,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 			else if (this.blockMetadata == BlockMachine.DIR_SOUTH) {
 				x1 -= radius;
 				y1 -= radius;
-				z1 -= 1;		
+				z1 -= 1;
 				x2 += radius;
 				y2 += radius;
 				z2 -= 1;
@@ -180,7 +180,7 @@ public class TileEntityVaporizer extends TileEntityMachine {
 			else if (this.blockMetadata == BlockMachine.DIR_NORTH) {
 				x1 -= radius;
 				y1 -= radius;
-				z1 += 1;		
+				z1 += 1;
 				x2 += radius;
 				y2 += radius;
 				z2 += 1;
@@ -203,12 +203,12 @@ public class TileEntityVaporizer extends TileEntityMachine {
 			}
 
 			AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(x1, y1, z1, x2, y2, z2);
-			
+
 			List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
 			if (entities != null && entities.size() > 0) {
-    			PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
-    			List<PotionEffect> potionEffects = Item.potion.getEffects(potionDefinitionBase.getPotionID());
-				
+				PotionDefinition potionDefinitionBase = Utils.getPotionDefinitionByFluid(this.fluidTanks[0].getFluid().getFluid());
+				List<PotionEffect> potionEffects = Item.potion.getEffects(potionDefinitionBase.getPotionID());
+
 				boolean willHaveEffect = false;
 				for (PotionEffect potionEffect : potionEffects) {
 					for (EntityLivingBase entity : entities) {
@@ -221,12 +221,12 @@ public class TileEntityVaporizer extends TileEntityMachine {
 				if (willHaveEffect) {
 					Utils.applyPotionEffects(potionDefinitionBase.getPotionID(), entities);
 					this.fluidTanks[0].drain(this.radius * FluidContainerRegistry.BUCKET_VOLUME, true);
-					
+
 					return true;
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -281,9 +281,9 @@ public class TileEntityVaporizer extends TileEntityMachine {
 	}
 
 	// getter/setter
-	
+
 	public int getRadius() {
-		return radius;
+		return this.radius;
 	}
 
 	public void setRadius(int radius) {

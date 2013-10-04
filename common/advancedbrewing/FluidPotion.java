@@ -24,8 +24,9 @@ public class FluidPotion extends Fluid {
 		this.color = color;
 	}
 
+	@Override
 	public int getColor() {
-		return color;
+		return this.color;
 	}
 
 	public void setColor(int color) {

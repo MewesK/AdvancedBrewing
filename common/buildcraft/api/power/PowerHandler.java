@@ -7,9 +7,9 @@
  */
 package buildcraft.api.power;
 
-import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.core.SafeTimeTracker;
 
 public final class PowerHandler {
 
@@ -45,12 +45,12 @@ public final class PowerHandler {
 		private final float powerLoss;
 
 		public PerditionCalculator() {
-			powerLoss = DEFAULT_POWERLOSS;
+			this.powerLoss = PerditionCalculator.DEFAULT_POWERLOSS;
 		}
 
 		public PerditionCalculator(float powerLoss) {
-			if (powerLoss < MIN_POWERLOSS) {
-				powerLoss = MIN_POWERLOSS;
+			if (powerLoss < PerditionCalculator.MIN_POWERLOSS) {
+				powerLoss = PerditionCalculator.MIN_POWERLOSS;
 			}
 			this.powerLoss = powerLoss;
 		}
@@ -69,7 +69,7 @@ public final class PowerHandler {
 		 * @return
 		 */
 		public float applyPerdition(PowerHandler powerHandler, float current, long ticksPassed) {
-			current -= powerLoss * ticksPassed;
+			current -= this.powerLoss * ticksPassed;
 			if (current < 0) {
 				current = 0;
 			}
@@ -96,31 +96,31 @@ public final class PowerHandler {
 		this.receptor = receptor;
 		this.type = type;
 		this.receiver = new PowerReceiver();
-		this.perdition = DEFAULT_PERDITION;
+		this.perdition = PowerHandler.DEFAULT_PERDITION;
 	}
 
 	public PowerReceiver getPowerReceiver() {
-		return receiver;
+		return this.receiver;
 	}
 
 	public float getMinEnergyReceived() {
-		return minEnergyReceived;
+		return this.minEnergyReceived;
 	}
 
 	public float getMaxEnergyReceived() {
-		return maxEnergyReceived;
+		return this.maxEnergyReceived;
 	}
 
 	public float getMaxEnergyStored() {
-		return maxEnergyStored;
+		return this.maxEnergyStored;
 	}
 
 	public float getActivationEnergy() {
-		return activationEnergy;
+		return this.activationEnergy;
 	}
 
 	public float getEnergyStored() {
-		return energyStored;
+		return this.energyStored;
 	}
 
 	/**
@@ -158,10 +158,10 @@ public final class PowerHandler {
 
 	public void configurePowerPerdition(int powerLoss, int powerLossRegularity) {
 		if (powerLoss == 0 || powerLossRegularity == 0) {
-			perdition = new PerditionCalculator(0);
+			this.perdition = new PerditionCalculator(0);
 			return;
 		}
-		perdition = new PerditionCalculator((float) powerLoss / (float) powerLossRegularity);
+		this.perdition = new PerditionCalculator((float) powerLoss / (float) powerLossRegularity);
 	}
 
 	/**
@@ -174,15 +174,17 @@ public final class PowerHandler {
 	 * @param perdition
 	 */
 	public void setPerdition(PerditionCalculator perdition) {
-		if (perdition == null)
-			perdition = DEFAULT_PERDITION;
+		if (perdition == null) {
+			perdition = PowerHandler.DEFAULT_PERDITION;
+		}
 		this.perdition = perdition;
 	}
 
 	public PerditionCalculator getPerdition() {
-		if (perdition == null)
-			return DEFAULT_PERDITION;
-		return perdition;
+		if (this.perdition == null) {
+			return PowerHandler.DEFAULT_PERDITION;
+		}
+		return this.perdition;
 	}
 
 	/**
@@ -195,42 +197,45 @@ public final class PowerHandler {
 	 * design around this though if you are aware of the limitations.
 	 */
 	public void update() {
-		applyPerdition();
-		applyWork();
-		validateEnergy();
+		this.applyPerdition();
+		this.applyWork();
+		this.validateEnergy();
 	}
 
 	private void applyPerdition() {
-		if (perditionTracker.markTimeIfDelay(receptor.getWorld(), 1) && energyStored > 0) {
-			float newEnergy = getPerdition().applyPerdition(this, energyStored, perditionTracker.durationOfLastDelay());
-			if (newEnergy == 0 || newEnergy < energyStored)
-				energyStored = newEnergy;
-			else
-				energyStored = DEFAULT_PERDITION.applyPerdition(this, energyStored, perditionTracker.durationOfLastDelay());
-			validateEnergy();
+		if (this.perditionTracker.markTimeIfDelay(this.receptor.getWorld(), 1) && this.energyStored > 0) {
+			float newEnergy = this.getPerdition().applyPerdition(this, this.energyStored, this.perditionTracker.durationOfLastDelay());
+			if (newEnergy == 0 || newEnergy < this.energyStored) {
+				this.energyStored = newEnergy;
+			}
+			else {
+				this.energyStored = PowerHandler.DEFAULT_PERDITION.applyPerdition(this, this.energyStored, this.perditionTracker.durationOfLastDelay());
+			}
+			this.validateEnergy();
 		}
 	}
 
 	private void applyWork() {
-		if (energyStored >= activationEnergy) {
-			if (doWorkTracker.markTimeIfDelay(receptor.getWorld(), 1)) {
-				receptor.doWork(this);
+		if (this.energyStored >= this.activationEnergy) {
+			if (this.doWorkTracker.markTimeIfDelay(this.receptor.getWorld(), 1)) {
+				this.receptor.doWork(this);
 			}
 		}
 	}
 
 	private void updateSources(ForgeDirection source) {
-		if (sourcesTracker.markTimeIfDelay(receptor.getWorld(), 1)) {
+		if (this.sourcesTracker.markTimeIfDelay(this.receptor.getWorld(), 1)) {
 			for (int i = 0; i < 6; ++i) {
-				powerSources[i] -= sourcesTracker.durationOfLastDelay();
-				if (powerSources[i] < 0) {
-					powerSources[i] = 0;
+				this.powerSources[i] -= this.sourcesTracker.durationOfLastDelay();
+				if (this.powerSources[i] < 0) {
+					this.powerSources[i] = 0;
 				}
 			}
 		}
 
-		if (source != null)
-			powerSources[source.ordinal()] = 10;
+		if (source != null) {
+			this.powerSources[source.ordinal()] = 10;
+		}
 	}
 
 	/**
@@ -243,46 +248,46 @@ public final class PowerHandler {
 	 * @return amount used
 	 */
 	public float useEnergy(float min, float max, boolean doUse) {
-		applyPerdition();
+		this.applyPerdition();
 
 		float result = 0;
 
-		if (energyStored >= min) {
-			if (energyStored <= max) {
-				result = energyStored;
+		if (this.energyStored >= min) {
+			if (this.energyStored <= max) {
+				result = this.energyStored;
 				if (doUse) {
-					energyStored = 0;
+					this.energyStored = 0;
 				}
 			}
 			else {
 				result = max;
 				if (doUse) {
-					energyStored -= max;
+					this.energyStored -= max;
 				}
 			}
 		}
 
-		validateEnergy();
+		this.validateEnergy();
 
 		return result;
 	}
 
 	public void readFromNBT(NBTTagCompound data) {
-		readFromNBT(data, "powerProvider");
+		this.readFromNBT(data, "powerProvider");
 	}
 
 	public void readFromNBT(NBTTagCompound data, String tag) {
 		NBTTagCompound nbt = data.getCompoundTag(tag);
-		energyStored = nbt.getFloat("storedEnergy");
+		this.energyStored = nbt.getFloat("storedEnergy");
 	}
 
 	public void writeToNBT(NBTTagCompound data) {
-		writeToNBT(data, "powerProvider");
+		this.writeToNBT(data, "powerProvider");
 	}
 
 	public void writeToNBT(NBTTagCompound data, String tag) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat("storedEnergy", energyStored);
+		nbt.setFloat("storedEnergy", this.energyStored);
 		data.setCompoundTag(tag, nbt);
 	}
 
@@ -292,27 +297,27 @@ public final class PowerHandler {
 		}
 
 		public float getMinEnergyReceived() {
-			return minEnergyReceived;
+			return PowerHandler.this.minEnergyReceived;
 		}
 
 		public float getMaxEnergyReceived() {
-			return maxEnergyReceived;
+			return PowerHandler.this.maxEnergyReceived;
 		}
 
 		public float getMaxEnergyStored() {
-			return maxEnergyStored;
+			return PowerHandler.this.maxEnergyStored;
 		}
 
 		public float getActivationEnergy() {
-			return activationEnergy;
+			return PowerHandler.this.activationEnergy;
 		}
 
 		public float getEnergyStored() {
-			return energyStored;
+			return PowerHandler.this.energyStored;
 		}
 
 		public Type getType() {
-			return type;
+			return PowerHandler.this.type;
 		}
 
 		public void update() {
@@ -325,8 +330,8 @@ public final class PowerHandler {
 		 * @return
 		 */
 		public float powerRequest() {
-			update();
-			return Math.min(maxEnergyReceived, maxEnergyStored - energyStored);
+			this.update();
+			return Math.min(PowerHandler.this.maxEnergyReceived, PowerHandler.this.maxEnergyStored - PowerHandler.this.energyStored);
 		}
 
 		/**
@@ -339,22 +344,22 @@ public final class PowerHandler {
 		public float receiveEnergy(Type source, final float quantity, ForgeDirection from) {
 			float used = quantity;
 			if (source == Type.ENGINE) {
-				if (used < minEnergyReceived) {
+				if (used < PowerHandler.this.minEnergyReceived) {
 					return 0;
 				}
-				else if (used > maxEnergyReceived) {
-					used = maxEnergyReceived;
+				else if (used > PowerHandler.this.maxEnergyReceived) {
+					used = PowerHandler.this.maxEnergyReceived;
 				}
 			}
 
-			updateSources(from);
+			PowerHandler.this.updateSources(from);
 
-			used = addEnergy(used);
+			used = PowerHandler.this.addEnergy(used);
 
-			applyWork();
+			PowerHandler.this.applyWork();
 
-			if (source == Type.ENGINE && type.eatsEngineExcess()) {
-				return Math.min(quantity, maxEnergyReceived);
+			if (source == Type.ENGINE && PowerHandler.this.type.eatsEngineExcess()) {
+				return Math.min(quantity, PowerHandler.this.maxEnergyReceived);
 			}
 
 			return used;
@@ -366,37 +371,37 @@ public final class PowerHandler {
 	 * @return the amount the power changed by
 	 */
 	public float addEnergy(float quantity) {
-		energyStored += quantity;
+		this.energyStored += quantity;
 
-		if (energyStored > maxEnergyStored) {
-			quantity -= energyStored - maxEnergyStored;
-			energyStored = maxEnergyStored;
+		if (this.energyStored > this.maxEnergyStored) {
+			quantity -= this.energyStored - this.maxEnergyStored;
+			this.energyStored = this.maxEnergyStored;
 		}
-		else if (energyStored < 0) {
-			quantity -= energyStored;
-			energyStored = 0;
+		else if (this.energyStored < 0) {
+			quantity -= this.energyStored;
+			this.energyStored = 0;
 		}
 
-		applyPerdition();
+		this.applyPerdition();
 
 		return quantity;
 	}
 
 	public void setEnergy(float quantity) {
 		this.energyStored = quantity;
-		validateEnergy();
+		this.validateEnergy();
 	}
 
 	public boolean isPowerSource(ForgeDirection from) {
-		return powerSources[from.ordinal()] != 0;
+		return this.powerSources[from.ordinal()] != 0;
 	}
 
 	private void validateEnergy() {
-		if (energyStored < 0) {
-			energyStored = 0;
+		if (this.energyStored < 0) {
+			this.energyStored = 0;
 		}
-		if (energyStored > maxEnergyStored) {
-			energyStored = maxEnergyStored;
+		if (this.energyStored > this.maxEnergyStored) {
+			this.energyStored = this.maxEnergyStored;
 		}
 	}
 }

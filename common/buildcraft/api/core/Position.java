@@ -19,97 +19,97 @@ public class Position {
 	public ForgeDirection orientation;
 
 	public Position(double ci, double cj, double ck) {
-		x = ci;
-		y = cj;
-		z = ck;
-		orientation = ForgeDirection.UNKNOWN;
+		this.x = ci;
+		this.y = cj;
+		this.z = ck;
+		this.orientation = ForgeDirection.UNKNOWN;
 	}
 
 	public Position(double ci, double cj, double ck, ForgeDirection corientation) {
-		x = ci;
-		y = cj;
-		z = ck;
-		orientation = corientation;
+		this.x = ci;
+		this.y = cj;
+		this.z = ck;
+		this.orientation = corientation;
 	}
 
 	public Position(Position p) {
-		x = p.x;
-		y = p.y;
-		z = p.z;
-		orientation = p.orientation;
+		this.x = p.x;
+		this.y = p.y;
+		this.z = p.z;
+		this.orientation = p.orientation;
 	}
 
 	public Position(NBTTagCompound nbttagcompound) {
-		x = nbttagcompound.getDouble("i");
-		y = nbttagcompound.getDouble("j");
-		z = nbttagcompound.getDouble("k");
+		this.x = nbttagcompound.getDouble("i");
+		this.y = nbttagcompound.getDouble("j");
+		this.z = nbttagcompound.getDouble("k");
 
-		orientation = ForgeDirection.UNKNOWN;
+		this.orientation = ForgeDirection.UNKNOWN;
 	}
 
 	public Position(TileEntity tile) {
-		x = tile.xCoord;
-		y = tile.yCoord;
-		z = tile.zCoord;
+		this.x = tile.xCoord;
+		this.y = tile.yCoord;
+		this.z = tile.zCoord;
 	}
 
 	public void moveRight(double step) {
-		switch (orientation) {
+		switch (this.orientation) {
 			case SOUTH:
-				x = x - step;
+				this.x = this.x - step;
 				break;
 			case NORTH:
-				x = x + step;
+				this.x = this.x + step;
 				break;
 			case EAST:
-				z = z + step;
+				this.z = this.z + step;
 				break;
 			case WEST:
-				z = z - step;
+				this.z = this.z - step;
 				break;
 			default:
 		}
 	}
 
 	public void moveLeft(double step) {
-		moveRight(-step);
+		this.moveRight(-step);
 	}
 
 	public void moveForwards(double step) {
-		switch (orientation) {
+		switch (this.orientation) {
 			case UP:
-				y = y + step;
+				this.y = this.y + step;
 				break;
 			case DOWN:
-				y = y - step;
+				this.y = this.y - step;
 				break;
 			case SOUTH:
-				z = z + step;
+				this.z = this.z + step;
 				break;
 			case NORTH:
-				z = z - step;
+				this.z = this.z - step;
 				break;
 			case EAST:
-				x = x + step;
+				this.x = this.x + step;
 				break;
 			case WEST:
-				x = x - step;
+				this.x = this.x - step;
 				break;
 			default:
 		}
 	}
 
 	public void moveBackwards(double step) {
-		moveForwards(-step);
+		this.moveForwards(-step);
 	}
 
 	public void moveUp(double step) {
-		switch (orientation) {
+		switch (this.orientation) {
 			case SOUTH:
 			case NORTH:
 			case EAST:
 			case WEST:
-				y = y + step;
+				this.y = this.y + step;
 				break;
 			default:
 		}
@@ -117,26 +117,26 @@ public class Position {
 	}
 
 	public void moveDown(double step) {
-		moveUp(-step);
+		this.moveUp(-step);
 	}
 
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
-		nbttagcompound.setDouble("i", x);
-		nbttagcompound.setDouble("j", y);
-		nbttagcompound.setDouble("k", z);
+		nbttagcompound.setDouble("i", this.x);
+		nbttagcompound.setDouble("j", this.y);
+		nbttagcompound.setDouble("k", this.z);
 	}
 
 	@Override
 	public String toString() {
-		return "{" + x + ", " + y + ", " + z + "}";
+		return "{" + this.x + ", " + this.y + ", " + this.z + "}";
 	}
 
 	public Position min(Position p) {
-		return new Position(p.x > x ? x : p.x, p.y > y ? y : p.y, p.z > z ? z : p.z);
+		return new Position(p.x > this.x ? this.x : p.x, p.y > this.y ? this.y : p.y, p.z > this.z ? this.z : p.z);
 	}
 
 	public Position max(Position p) {
-		return new Position(p.x < x ? x : p.x, p.y < y ? y : p.y, p.z < z ? z : p.z);
+		return new Position(p.x < this.x ? this.x : p.x, p.y < this.y ? this.y : p.y, p.z < this.z ? this.z : p.z);
 	}
 
 }

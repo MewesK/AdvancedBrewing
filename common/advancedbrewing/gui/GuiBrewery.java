@@ -20,7 +20,7 @@ public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 
 	public GuiBrewery(InventoryPlayer inventoryPlayer, TileEntityBrewery tileEntity) {
 		super(inventoryPlayer, tileEntity, new ContainerBrewery(inventoryPlayer, tileEntity), new ResourceLocation("advancedbrewing", tileEntity.getType() > 0 ? "textures/gui/brewery_multi.png" : "textures/gui/brewery.png"), Localization.get("gui.info.brewery.text"));
-        this.ySize = 188;
+		this.ySize = 188;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class GuiBrewery extends GuiMachine<TileEntityBrewery> {
 		int workTime = tileEntity.getWorkTime() > 0 ? tileEntity.getWorkTime() : TileEntityBrewery.MAX_WORKTIME;
 		if (workTime > 0) {
 			float gaugeWidth = (((float) (TileEntityBrewery.MAX_WORKTIME - workTime)) / ((float) TileEntityBrewery.MAX_WORKTIME)) * 29f;
-			drawTexturedModalRect(x + 73, y + 42, 192, 0, (int) gaugeWidth, 12);
+			this.drawTexturedModalRect(x + 73, y + 42, 192, 0, (int) gaugeWidth, 12);
 		}
 
 		int inputFluidAmount = fluidTanks[0].getFluidAmount();

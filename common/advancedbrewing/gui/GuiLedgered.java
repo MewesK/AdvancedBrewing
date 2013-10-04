@@ -21,16 +21,17 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 
-/** 
- * Stolen from Buildcraft. Find the original here: https://github.com/BuildCraft/BuildCraft
+/**
+ * Stolen from Buildcraft. Find the original here:
+ * https://github.com/BuildCraft/BuildCraft
  */
 public abstract class GuiLedgered extends GuiContainer {
 
 	protected static final ResourceLocation LEDGER_TEXTURE = new ResourceLocation("advancedbrewing", "textures/gui/ledger.png");
 	protected static final ResourceLocation LEDGER_ICONS_TEXTURE = new ResourceLocation("advancedbrewing", "textures/gui/ledger_icons.png");
-	
+
 	protected LedgerManager ledgerManager = new LedgerManager(this);
-	
+
 	@SuppressWarnings("rawtypes")
 	private static Class openedLedger;
 
@@ -45,26 +46,26 @@ public abstract class GuiLedgered extends GuiContainer {
 
 		public void add(Ledger ledger) {
 			this.ledgers.add(ledger);
-			if (getOpenedLedger() != null && ledger.getClass().equals(getOpenedLedger())) {
+			if (GuiLedgered.getOpenedLedger() != null && ledger.getClass().equals(GuiLedgered.getOpenedLedger())) {
 				ledger.setFullyOpen();
 			}
 		}
 
 		/**
 		 * Inserts a ledger into the next-to-last position.
-		 *
+		 * 
 		 * @param ledger
 		 */
 		public void insert(Ledger ledger) {
-			this.ledgers.add(ledgers.size() - 1, ledger);
+			this.ledgers.add(this.ledgers.size() - 1, ledger);
 		}
 
 		protected Ledger getAtPosition(int mX, int mY) {
-			int xShift = ((gui.width - gui.xSize) / 2) + gui.xSize;
-			int yShift = ((gui.height - gui.ySize) / 2) + 8;
+			int xShift = ((this.gui.width - this.gui.xSize) / 2) + this.gui.xSize;
+			int yShift = ((this.gui.height - this.gui.ySize) / 2) + 8;
 
-			for (int i = 0; i < ledgers.size(); i++) {
-				Ledger ledger = ledgers.get(i);
+			for (int i = 0; i < this.ledgers.size(); i++) {
+				Ledger ledger = this.ledgers.get(i);
 				if (!ledger.isVisible()) {
 					continue;
 				}
@@ -83,7 +84,7 @@ public abstract class GuiLedgered extends GuiContainer {
 
 		protected void drawLedgers(int mouseX, int mouseY) {
 			int xPos = 8;
-			for (Ledger ledger : ledgers) {
+			for (Ledger ledger : this.ledgers) {
 
 				ledger.update();
 				if (!ledger.isVisible()) {
@@ -91,25 +92,25 @@ public abstract class GuiLedgered extends GuiContainer {
 				}
 
 				for (GuiButtonIcon guiButton : ledger.getButtonList()) {
-					guiButton.xPosition = guiLeft + xSize + guiButton.xPosition_;
-					guiButton.yPosition = guiTop + xPos + guiButton.yPosition_;
+					guiButton.xPosition = GuiLedgered.this.guiLeft + GuiLedgered.this.xSize + guiButton.xPosition_;
+					guiButton.yPosition = GuiLedgered.this.guiTop + xPos + guiButton.yPosition_;
 				}
-				
-				ledger.draw(guiLeft + xSize, guiTop + xPos);
+
+				ledger.draw(GuiLedgered.this.guiLeft + GuiLedgered.this.xSize, GuiLedgered.this.guiTop + xPos);
 				xPos += ledger.getHeight();
 			}
 		}
 
 		protected void drawLedgerTooltips(int mouseX, int mouseY) {
-			Ledger ledger = getAtPosition(mouseX, mouseY);
+			Ledger ledger = this.getAtPosition(mouseX, mouseY);
 			if (ledger != null && !ledger.isOpen()) {
-				int startX = mouseX - ((gui.width - gui.xSize) / 2) + 12;
-				int startY = mouseY - ((gui.height - gui.ySize) / 2) - 12;
+				int startX = mouseX - ((this.gui.width - this.gui.xSize) / 2) + 12;
+				int startY = mouseY - ((this.gui.height - this.gui.ySize) / 2) - 12;
 
 				String tooltip = ledger.getTooltip();
-				int textWidth = fontRenderer.getStringWidth(tooltip);
-				drawGradientRect(startX - 3, startY - 3, startX + textWidth + 3, startY + 8 + 3, 0xc0000000, 0xc0000000);
-				fontRenderer.drawStringWithShadow(tooltip, startX, startY, -1);
+				int textWidth = GuiLedgered.this.fontRenderer.getStringWidth(tooltip);
+				GuiLedgered.this.drawGradientRect(startX - 3, startY - 3, startX + textWidth + 3, startY + 8 + 3, 0xc0000000, 0xc0000000);
+				GuiLedgered.this.fontRenderer.drawStringWithShadow(tooltip, startX, startY, -1);
 			}
 		}
 
@@ -117,26 +118,27 @@ public abstract class GuiLedgered extends GuiContainer {
 			if (mouseButton == 0) {
 
 				Ledger ledger = this.getAtPosition(x, y);
-				
-				// Default action only if the mouse click was not handled by the ledger itself.
-				if (ledger != null && !ledger.handleMouseClicked(x, y, mouseButton)) {
-    				boolean cancelEvent = false;
-    				for (GuiButton guiButton : ledger.getButtonList()) {
-    					if (guiButton.mousePressed(FMLClientHandler.instance().getClient(), x, y)) {
-    						cancelEvent = true;
-    						break;
-    					}
-    				}
 
-    				if (!cancelEvent) {
-    					for (Ledger other : ledgers) {
-    						if (other != ledger && other.isOpen()) {
-    							other.toggleOpen();
-    						}
-    					}
-    					ledger.toggleOpen();
-    				}
-    			}
+				// Default action only if the mouse click was not handled by the
+				// ledger itself.
+				if (ledger != null && !ledger.handleMouseClicked(x, y, mouseButton)) {
+					boolean cancelEvent = false;
+					for (GuiButton guiButton : ledger.getButtonList()) {
+						if (guiButton.mousePressed(FMLClientHandler.instance().getClient(), x, y)) {
+							cancelEvent = true;
+							break;
+						}
+					}
+
+					if (!cancelEvent) {
+						for (Ledger other : this.ledgers) {
+							if (other != ledger && other.isOpen()) {
+								other.toggleOpen();
+							}
+						}
+						ledger.toggleOpen();
+					}
+				}
 			}
 		}
 	}
@@ -144,7 +146,7 @@ public abstract class GuiLedgered extends GuiContainer {
 	/**
 	 * Side ledger for guis
 	 */
-	protected abstract class Ledger {		
+	protected abstract class Ledger {
 		private boolean open;
 		protected int overlayColor = 0xffffff;
 		protected int headerColour = 0xe1c92f;
@@ -155,41 +157,43 @@ public abstract class GuiLedgered extends GuiContainer {
 		protected int limitWidth = 128;
 		protected int maxWidth = 124;
 		protected int minWidth = 24;
-		protected int currentWidth = minWidth;
+		protected int currentWidth = this.minWidth;
 		protected int maxHeight = 24;
 		protected int minHeight = 24;
-		protected int currentHeight = minHeight;
+		protected int currentHeight = this.minHeight;
 
 		protected int iconOffsetX = 0;
 		protected int iconOffsetY = 0;
-		
+
 		protected List<GuiButtonIcon> buttonList = new ArrayList<GuiButtonIcon>();
 
 		public void update() {
 			// Width
-			if (open && currentWidth < maxWidth) {
-				currentWidth += 4;
-			} else if (!open && currentWidth > minWidth) {
-				currentWidth -= 4;
+			if (this.open && this.currentWidth < this.maxWidth) {
+				this.currentWidth += 4;
+			}
+			else if (!this.open && this.currentWidth > this.minWidth) {
+				this.currentWidth -= 4;
 			}
 
 			// Height
-			if (open && currentHeight < maxHeight) {
-				currentHeight += 4;
-			} else if (!open && currentHeight > minHeight) {
-				currentHeight -= 4;
+			if (this.open && this.currentHeight < this.maxHeight) {
+				this.currentHeight += 4;
+			}
+			else if (!this.open && this.currentHeight > this.minHeight) {
+				this.currentHeight -= 4;
 			}
 		}
 
 		public int getHeight() {
-			return currentHeight;
+			return this.currentHeight;
 		}
 
 		public void draw(int x, int y) {
-			drawBackground(x, y);
-			drawIcon(x, y, this.iconOffsetX, this.iconOffsetY);
+			this.drawBackground(x, y);
+			this.drawIcon(x, y, this.iconOffsetX, this.iconOffsetY);
 
-			if (!isFullyOpened()) {
+			if (!this.isFullyOpened()) {
 				for (GuiButton guiButton : this.buttonList) {
 					guiButton.drawButton = false;
 				}
@@ -209,7 +213,7 @@ public abstract class GuiLedgered extends GuiContainer {
 
 		public boolean intersectsWith(int mouseX, int mouseY, int shiftX, int shiftY) {
 
-			if (mouseX >= shiftX && mouseX <= shiftX + currentWidth && mouseY >= shiftY && mouseY <= shiftY + getHeight()) {
+			if (mouseX >= shiftX && mouseX <= shiftX + this.currentWidth && mouseY >= shiftY && mouseY <= shiftY + this.getHeight()) {
 				return true;
 			}
 
@@ -217,18 +221,19 @@ public abstract class GuiLedgered extends GuiContainer {
 		}
 
 		public void setFullyOpen() {
-			open = true;
-			currentWidth = maxWidth;
-			currentHeight = maxHeight;
+			this.open = true;
+			this.currentWidth = this.maxWidth;
+			this.currentHeight = this.maxHeight;
 		}
 
 		public void toggleOpen() {
-			if (open) {
-				open = false;
-				setOpenedLedger(null);
-			} else {
-				open = true;
-				setOpenedLedger(this.getClass());
+			if (this.open) {
+				this.open = false;
+				GuiLedgered.setOpenedLedger(null);
+			}
+			else {
+				this.open = true;
+				GuiLedgered.setOpenedLedger(this.getClass());
 			}
 		}
 
@@ -241,32 +246,36 @@ public abstract class GuiLedgered extends GuiContainer {
 		}
 
 		protected boolean isFullyOpened() {
-			return currentWidth >= maxWidth;
+			return this.currentWidth >= this.maxWidth;
 		}
 
 		protected void drawBackground(int x, int y) {
-			float colorR = (overlayColor >> 16 & 255) / 255.0F;
-			float colorG = (overlayColor >> 8 & 255) / 255.0F;
-			float colorB = (overlayColor & 255) / 255.0F;
+			float colorR = (this.overlayColor >> 16 & 255) / 255.0F;
+			float colorG = (this.overlayColor >> 8 & 255) / 255.0F;
+			float colorB = (this.overlayColor & 255) / 255.0F;
 
 			GL11.glColor4f(colorR, colorG, colorB, 1.0F);
 
-			mc.renderEngine.bindTexture(LEDGER_TEXTURE);
-			drawTexturedModalRect(x, y, 0, 256 - currentHeight, 4, currentHeight);
-			drawTexturedModalRect(x + 4, y, 256 - currentWidth + 4, 0, currentWidth - 4, 4);
-			drawTexturedModalRect(x, y, 0, 0, 4, 4); // Add in top left corner again
-			drawTexturedModalRect(x + 4, y + 4, 256 - currentWidth + 4, 256 - currentHeight + 4, currentWidth - 4, currentHeight - 4);
+			GuiLedgered.this.mc.renderEngine.bindTexture(GuiLedgered.LEDGER_TEXTURE);
+			GuiLedgered.this.drawTexturedModalRect(x, y, 0, 256 - this.currentHeight, 4, this.currentHeight);
+			GuiLedgered.this.drawTexturedModalRect(x + 4, y, 256 - this.currentWidth + 4, 0, this.currentWidth - 4, 4);
+			GuiLedgered.this.drawTexturedModalRect(x, y, 0, 0, 4, 4); // Add in
+																	  // top
+																	  // left
+																	  // corner
+			// again
+			GuiLedgered.this.drawTexturedModalRect(x + 4, y + 4, 256 - this.currentWidth + 4, 256 - this.currentHeight + 4, this.currentWidth - 4, this.currentHeight - 4);
 
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0F);
 		}
-		
+
 		protected void drawIcon(int x, int y, int xIndex, int yIndex) {
-			mc.renderEngine.bindTexture(LEDGER_ICONS_TEXTURE);
-			drawTexturedModalRect(x + 3, y + 4, xIndex * 16, yIndex * 16, 16, 16);
+			GuiLedgered.this.mc.renderEngine.bindTexture(GuiLedgered.LEDGER_ICONS_TEXTURE);
+			GuiLedgered.this.drawTexturedModalRect(x + 3, y + 4, xIndex * 16, yIndex * 16, 16, 16);
 		}
 
 		public List<GuiButtonIcon> getButtonList() {
-			return buttonList;
+			return this.buttonList;
 		}
 	}
 
@@ -276,36 +285,36 @@ public abstract class GuiLedgered extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
-		ledgerManager.drawLedgers(par2, par3);
+		this.ledgerManager.drawLedgers(par2, par3);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		ledgerManager.drawLedgerTooltips(par1, par2);
+		this.ledgerManager.drawLedgerTooltips(par1, par2);
 	}
-	
+
 	@Override
 	protected void mouseClicked(int par1, int par2, int mouseButton) {
 		super.mouseClicked(par1, par2, mouseButton);
-		ledgerManager.handleMouseClicked(par1, par2, mouseButton);
+		this.ledgerManager.handleMouseClicked(par1, par2, mouseButton);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public static void setOpenedLedger(Class ledgerClass) {
-		openedLedger = ledgerClass;
+		GuiLedgered.openedLedger = ledgerClass;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public static Class getOpenedLedger() {
-		return openedLedger;
+		return GuiLedgered.openedLedger;
 	}
-	
+
 	@Override
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public void initGui() {
-        super.initGui();
-        for (Ledger ledger : this.ledgerManager.ledgers) {
-        	this.buttonList.addAll(ledger.getButtonList());
+		super.initGui();
+		for (Ledger ledger : this.ledgerManager.ledgers) {
+			this.buttonList.addAll(ledger.getButtonList());
 		}
-    }
+	}
 }

@@ -15,7 +15,7 @@ import advancedbrewing.renderer.ItemAutoPotionRenderer;
 import advancedbrewing.renderer.ItemGlintOverlayRenderer;
 import advancedbrewing.renderer.ItemMachineRenderer;
 
-public class ProxyClient extends Proxy {	
+public class ProxyClient extends Proxy {
 	@Override
 	public void registerRenderers() {
 		MinecraftForgeClient.registerItemRenderer(AdvancedBrewing.arrowPotionItem.itemID, new ItemGlintOverlayRenderer());

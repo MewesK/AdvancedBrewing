@@ -11,14 +11,6 @@ package advancedbrewing.item;
 
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
-import advancedbrewing.AdvancedBrewing;
-import advancedbrewing.PotionDefinition;
-import advancedbrewing.utils.Localization;
-import advancedbrewing.utils.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -34,6 +26,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import org.lwjgl.input.Keyboard;
+
+import advancedbrewing.AdvancedBrewing;
+import advancedbrewing.PotionDefinition;
+import advancedbrewing.utils.Localization;
+import advancedbrewing.utils.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemBowPotion extends ItemBucketPotion {
 	public static int MAX_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 128;
@@ -151,21 +152,21 @@ public class ItemBowPotion extends ItemBucketPotion {
 				if (fluid != null && tag.getInteger("FluidAmount") - FluidContainerRegistry.BUCKET_VOLUME >= 0) {
 					PotionDefinition potionDefinition = Utils.getPotionDefinitionByFluid(fluid);
 					if (potionDefinition != null) {
-    					List<PotionEffect> list = Item.potion.getEffects(new ItemStack(Item.potion, 1, potionDefinition.getPotionID()));
-    					if (list != null && list.size() > 0) {
-    						boolean willHaveEffect = false;
-    
-    						for (PotionEffect potioneffect : list) {
-    							if (!((EntityLivingBase) entity).isPotionActive(potioneffect.getPotionID())) {
-    								willHaveEffect = true;
-    								break;
-    							}
-    						}
-    
-    						if (willHaveEffect) {
-    							onEaten(itemStack, world, (EntityPlayer) entity);
-    						}
-    					}
+						List<PotionEffect> list = Item.potion.getEffects(new ItemStack(Item.potion, 1, potionDefinition.getPotionID()));
+						if (list != null && list.size() > 0) {
+							boolean willHaveEffect = false;
+
+							for (PotionEffect potioneffect : list) {
+								if (!((EntityLivingBase) entity).isPotionActive(potioneffect.getPotionID())) {
+									willHaveEffect = true;
+									break;
+								}
+							}
+
+							if (willHaveEffect) {
+								this.onEaten(itemStack, world, (EntityPlayer) entity);
+							}
+						}
 					}
 				}
 			}

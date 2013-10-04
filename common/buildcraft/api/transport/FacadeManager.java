@@ -1,6 +1,7 @@
 package buildcraft.api.transport;
 
 import java.lang.reflect.Method;
+
 import net.minecraft.item.ItemStack;
 
 /**
@@ -14,11 +15,11 @@ public class FacadeManager {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void addFacade(ItemStack is) {
 		try {
-			if (addFacade == null) {
+			if (FacadeManager.addFacade == null) {
 				Class facade = Class.forName("buildcraft.transport.ItemFacade");
-				addFacade = facade.getMethod("addFacade", ItemStack.class);
+				FacadeManager.addFacade = facade.getMethod("addFacade", ItemStack.class);
 			}
-			addFacade.invoke(null, is);
+			FacadeManager.addFacade.invoke(null, is);
 		}
 		catch (Exception ex) {
 		}

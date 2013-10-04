@@ -12,8 +12,6 @@ package advancedbrewing.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.Type;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,6 +29,8 @@ import advancedbrewing.gui.SlotBreweryBasePotionContainer;
 import advancedbrewing.gui.SlotBreweryEmptyContainer;
 import advancedbrewing.gui.SlotBreweryPotionIngredient;
 import advancedbrewing.utils.Utils;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.Type;
 
 public class TileEntityBrewery extends TileEntityMachine {
 	public static int RESULT_FLUIDAMOUNT = FluidContainerRegistry.BUCKET_VOLUME * 4;
@@ -46,8 +46,8 @@ public class TileEntityBrewery extends TileEntityMachine {
 		this.itemStacks = new ItemStack[14];
 		this.fluidTanks = new FluidTank[2];
 
-		this.fluidTanks[0] = new FluidTank(MAX_FLUIDAMOUNT);
-		this.fluidTanks[1] = new FluidTank(MAX_FLUIDAMOUNT);
+		this.fluidTanks[0] = new FluidTank(TileEntityMachine.MAX_FLUIDAMOUNT);
+		this.fluidTanks[1] = new FluidTank(TileEntityMachine.MAX_FLUIDAMOUNT);
 
 		this.setPowerHandler(new PowerHandler(this, Type.MACHINE));
 		this.getPowerHandler().configure(2, 100, 1, 5000);
@@ -66,13 +66,13 @@ public class TileEntityBrewery extends TileEntityMachine {
 
 		// process bucket slot (input)
 
-		if (processContainerInput(0, 0, true)) {
+		if (this.processContainerInput(0, 0, true)) {
 			usedEnergy += this.getPowerHandler().useEnergy(1, 1, true);
 		}
 
 		// process bucket slot (output)
 
-		if (processContainerOutput(1, 1, 1)) {
+		if (this.processContainerOutput(1, 1, 1)) {
 			usedEnergy += this.getPowerHandler().useEnergy(1, 1, true);
 		}
 
@@ -97,7 +97,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 			}
 		}
 		else if (this.canWork()) {
-			this.workTime = MAX_WORKTIME;
+			this.workTime = TileEntityBrewery.MAX_WORKTIME;
 
 			this.ingredientIDs[0] = Utils.getItemIDByItemStack(this.itemStacks[2]);
 			this.ingredientIDs[1] = Utils.getItemIDByItemStack(this.itemStacks[3]);
@@ -135,7 +135,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 		for (int i = 0; i < 9; i++) {
 			ItemStack itemStack = this.itemStacks[i + 5];
 			if (itemStack != null && itemStack.itemID == itemID && itemStack.stackSize >= amount) {
-				decrStackSize(i + 5, amount);
+				this.decrStackSize(i + 5, amount);
 				return;
 			}
 		}
@@ -148,13 +148,13 @@ public class TileEntityBrewery extends TileEntityMachine {
 		if (this.redstoneActivated && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
 			return false;
 		}
-		
+
 		// update type
 		this.checkIfProperlyFormed();
 
 		// check tanks & fluids
-		int fluidAmount = this.type > 0 ? RESULT_FLUIDAMOUNT_MULTI : RESULT_FLUIDAMOUNT;
-		if (this.fluidTanks[0].getFluid() != null && this.fluidTanks[0].getFluidAmount() >= fluidAmount && this.fluidTanks[1].getFluidAmount() <= MAX_FLUIDAMOUNT - fluidAmount) {
+		int fluidAmount = this.type > 0 ? TileEntityBrewery.RESULT_FLUIDAMOUNT_MULTI : TileEntityBrewery.RESULT_FLUIDAMOUNT;
+		if (this.fluidTanks[0].getFluid() != null && this.fluidTanks[0].getFluidAmount() >= fluidAmount && this.fluidTanks[1].getFluidAmount() <= TileEntityMachine.MAX_FLUIDAMOUNT - fluidAmount) {
 			// check ingredients
 			List<ItemStack> validIngredients = new ArrayList<ItemStack>();
 			for (int i = 2; i < (this.type > 0 ? 5 : 3); i++) {
@@ -208,7 +208,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 				fluidResult = Utils.getFluidByPotionDefintion(potionDefinitionResult);
 			}
 
-			int fluidAmount = this.type > 0 ? RESULT_FLUIDAMOUNT_MULTI : RESULT_FLUIDAMOUNT;
+			int fluidAmount = this.type > 0 ? TileEntityBrewery.RESULT_FLUIDAMOUNT_MULTI : TileEntityBrewery.RESULT_FLUIDAMOUNT;
 			this.fluidTanks[0].drain(fluidAmount, true);
 			this.fluidTanks[1].fill(new FluidStack(fluidResult, fluidAmount), true);
 
@@ -293,7 +293,7 @@ public class TileEntityBrewery extends TileEntityMachine {
 
 	public int checkIfProperlyFormed() {
 		int type = 1;
-		int dir = getBlockMetadata();
+		int dir = this.getBlockMetadata();
 
 		// Horizontal (X or Z)
 		for (int horiz = -1; horiz <= 1; horiz++) {
@@ -339,6 +339,6 @@ public class TileEntityBrewery extends TileEntityMachine {
 	}
 
 	public int getType() {
-		return type;
+		return this.type;
 	}
 }

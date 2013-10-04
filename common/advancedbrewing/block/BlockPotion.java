@@ -10,6 +10,7 @@
 package advancedbrewing.block;
 
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
@@ -39,20 +40,20 @@ public class BlockPotion extends BlockFluidClassic {
 	public BlockPotion(int id, Fluid fluid, Material material) {
 		super(id, fluid, material);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
+	public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
 		PotionDefinition potionDefinition = Utils.getPotionDefinitionByBlock(this);
-        return potionDefinition != null ? potionDefinition.getColor() : super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
-    }
-	
+		return potionDefinition != null ? potionDefinition.getColor() : super.colorMultiplier(par1IBlockAccess, par2, par3, par4);
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int metadata) {
 		return side != 0 && side != 1 ? this.iconFlow : this.iconStill;
 	}
-    
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister) {
@@ -68,22 +69,22 @@ public class BlockPotion extends BlockFluidClassic {
 			List<PotionEffect> list = Item.potion.getEffects(new ItemStack(Item.potion, 1, potionDefinition.getPotionID()));
 			if (list != null && list.size() > 0) {
 				boolean willHaveEffect = false;
-				
+
 				for (PotionEffect potioneffect : list) {
 					if (!((EntityLivingBase) entity).isPotionActive(potioneffect.getPotionID())) {
 						willHaveEffect = true;
 						break;
 					}
 				}
-				
+
 				if (willHaveEffect) {
-    				int[] sourceBlockCoords = this.findSourceBlockRecursive(world, x, y, z, MAX_SOURCEBLOCK_DISTANCE);
-    
-    				if (sourceBlockCoords != null) {
+					int[] sourceBlockCoords = this.findSourceBlockRecursive(world, x, y, z, BlockPotion.MAX_SOURCEBLOCK_DISTANCE);
+
+					if (sourceBlockCoords != null) {
 						Utils.applyPotionEffects(potionDefinition.getPotionID(), (EntityLivingBase) entity);
-    
-    					world.setBlockToAir(sourceBlockCoords[0], sourceBlockCoords[1], sourceBlockCoords[2]);
-    				}
+
+						world.setBlockToAir(sourceBlockCoords[0], sourceBlockCoords[1], sourceBlockCoords[2]);
+					}
 				}
 			}
 		}
@@ -92,27 +93,27 @@ public class BlockPotion extends BlockFluidClassic {
 	private int[] findSourceBlockRecursive(World world, int x, int y, int z, int maxDistance) {
 		int curBlockMetadata = world.getBlockMetadata(x, y, z);
 
-		int[] nBlockCoords1 = this._findSourceBlockRecursive(world, blockID, x, y, z, x + 1, y, z, curBlockMetadata, maxDistance);
+		int[] nBlockCoords1 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x + 1, y, z, curBlockMetadata, maxDistance);
 		if (nBlockCoords1 != null) {
 			return nBlockCoords1;
 		}
-		int[] nBlockCoords2 = this._findSourceBlockRecursive(world, blockID, x, y, z, x - 1, y, z, curBlockMetadata, maxDistance);
+		int[] nBlockCoords2 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x - 1, y, z, curBlockMetadata, maxDistance);
 		if (nBlockCoords2 != null) {
 			return nBlockCoords2;
 		}
-		int[] nBlockCoords3 = this._findSourceBlockRecursive(world, blockID, x, y, z, x, y + 1, z, curBlockMetadata, maxDistance);
+		int[] nBlockCoords3 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x, y + 1, z, curBlockMetadata, maxDistance);
 		if (nBlockCoords3 != null) {
 			return nBlockCoords3;
 		}
-		int[] nBlockCoords4 = this._findSourceBlockRecursive(world, blockID, x, y, z, x, y - 1, z, curBlockMetadata, maxDistance);
+		int[] nBlockCoords4 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x, y - 1, z, curBlockMetadata, maxDistance);
 		if (nBlockCoords4 != null) {
 			return nBlockCoords4;
 		}
-		int[] nBlockCoords5 = this._findSourceBlockRecursive(world, blockID, x, y, z, x, y, z + 1, curBlockMetadata, maxDistance);
+		int[] nBlockCoords5 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x, y, z + 1, curBlockMetadata, maxDistance);
 		if (nBlockCoords5 != null) {
 			return nBlockCoords5;
 		}
-		int[] nBlockCoords6 = this._findSourceBlockRecursive(world, blockID, x, y, z, x, y, z - 1, curBlockMetadata, maxDistance);
+		int[] nBlockCoords6 = this._findSourceBlockRecursive(world, this.blockID, x, y, z, x, y, z - 1, curBlockMetadata, maxDistance);
 		if (nBlockCoords6 != null) {
 			return nBlockCoords6;
 		}

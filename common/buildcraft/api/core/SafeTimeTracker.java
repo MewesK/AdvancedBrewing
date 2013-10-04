@@ -19,30 +19,32 @@ public class SafeTimeTracker {
 	 * successfully.
 	 */
 	public boolean markTimeIfDelay(World world, long delay) {
-		if (world == null)
+		if (world == null) {
 			return false;
+		}
 
 		long currentTime = world.getTotalWorldTime();
 
-		if (currentTime < lastMark) {
-			lastMark = currentTime;
+		if (currentTime < this.lastMark) {
+			this.lastMark = currentTime;
 			return false;
 		}
-		else if (lastMark + delay <= currentTime) {
-			duration = currentTime - lastMark;
-			lastMark = currentTime;
+		else if (this.lastMark + delay <= currentTime) {
+			this.duration = currentTime - this.lastMark;
+			this.lastMark = currentTime;
 			return true;
 		}
-		else
+		else {
 			return false;
+		}
 
 	}
 
 	public long durationOfLastDelay() {
-		return duration > 0 ? duration : 0;
+		return this.duration > 0 ? this.duration : 0;
 	}
 
 	public void markTime(World world) {
-		lastMark = world.getTotalWorldTime();
+		this.lastMark = world.getTotalWorldTime();
 	}
 }
