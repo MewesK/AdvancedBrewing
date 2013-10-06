@@ -1,2 +1,2 @@
-## AdvancedBrewing 0.1
+## AdvancedBrewing
 
